@@ -5,9 +5,11 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WeatherForecastApp"
         mc:Ignorable="d"
+        Loaded="loadWeatherByHours"
+        SizeChanged="loadWeatherByHours"
         Title="Weather" MinHeight="600" Height="600" MinWidth="1024" Width="1024" WindowStartupLocation="CenterScreen">
 
-    <Window.Resources>
+        <Window.Resources>
         <Image x:Key="ReloadImage" RenderOptions.BitmapScalingMode="HighQuality" Source="Images/reload.png" />
         <Image x:Key="PinImage" RenderOptions.BitmapScalingMode="HighQuality" Source="Images/pin.png" />
 
@@ -22,7 +24,29 @@
 
 
     </Window.Resources>
+
+    
+    
     <DockPanel>
+        
+        <Canvas Panel.ZIndex="99" DockPanel.Dock="Right" Visibility="Visible">
+            <Grid Width="300" Height="200" Canvas.Top="50" Canvas.Right="5" Visibility="Hidden">
+                <Grid.RowDefinitions>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                </Grid.RowDefinitions>
+
+                <Rectangle Grid.Row="0" Fill="#205770"></Rectangle>
+                <Rectangle Grid.Row="1" Fill="#205770"></Rectangle>
+                <Rectangle Grid.Row="2" Fill="#205770"></Rectangle>
+                
+                
+            </Grid>
+        </Canvas>
+        
+        
+        
         <DockPanel DockPanel.Dock="Top" Height="50" Background="#205770">
             <TextBox x:Name="searchTextBox" DockPanel.Dock="Right" Background="#2a657f" Foreground="White" BorderThickness="0" Margin="0,0,5,0" Text="Search..." Padding="10" Width="300" Height="40" VerticalAlignment="Stretch" FontSize="16" VerticalContentAlignment="Center" TextChanged="searchTextBox_TextChanged"></TextBox>
 
@@ -37,9 +61,7 @@
                 <ImageBrush ImageSource="Images/start_background.jpg" Stretch="UniformToFill"/>
             </ScrollViewer.Background>
             <StackPanel>
-                <Grid Height="510" ShowGridLines="False">
-                    
-
+                <Grid Height="360" ShowGridLines="False">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition></ColumnDefinition>
                         <ColumnDefinition Width="400"></ColumnDefinition>
@@ -50,7 +72,7 @@
                         <RowDefinition></RowDefinition>
                         <RowDefinition></RowDefinition>
                         <RowDefinition></RowDefinition>
-                        <RowDefinition></RowDefinition>
+                        <RowDefinition Height="35"></RowDefinition>
                     </Grid.RowDefinitions>
 
                     <TextBlock Style="{StaticResource WhiteText}" Grid.Column="1" Text="Novi Sad, RS" FontWeight="SemiBold" FontSize="42"
@@ -91,13 +113,130 @@
                         <TextBlock Grid.Column="1" Grid.Row="1" Foreground="White" Style="{StaticResource CenterTextBlock}"
                                    FontSize="15" Text="Pressure: 1008"></TextBlock>
                         <TextBlock Grid.Column="0" Grid.Row="2" Foreground="White" Style="{StaticResource CenterTextBlock}"
-                                   FontSize="15" Text="Minimum: 10°C"></TextBlock>
-                        <TextBlock Grid.Column="1" Grid.Row="2" Foreground="White" Style="{StaticResource CenterTextBlock}"
                                    FontSize="15" Text="Maximum: 23°C"></TextBlock>
+                        <TextBlock Grid.Column="1" Grid.Row="2" Foreground="White" Style="{StaticResource CenterTextBlock}"
+                                   FontSize="15" Text="Minimum: 10°C"></TextBlock>
+                        <TextBlock Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="2" Foreground="White" Style="{StaticResource CenterTextBlock}"
+                                   FontSize="15" Text="Small description"></TextBlock>
+                        <TextBlock Grid.Column="0" Grid.Row="4" Grid.ColumnSpan="2" Foreground="White" Style="{StaticResource CenterTextBlock}"
+                                   FontSize="15" Text="Updated at 12:04 PM"></TextBlock>
 
                     </Grid>
 
                 </Grid>
+
+                <Grid Height="204">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition></ColumnDefinition>
+                        <ColumnDefinition MinWidth="204" MaxWidth="260"></ColumnDefinition>
+                        <ColumnDefinition MinWidth="204" MaxWidth="260"></ColumnDefinition>
+                        <ColumnDefinition MinWidth="204" MaxWidth="260"></ColumnDefinition>
+                        <ColumnDefinition MinWidth="204" MaxWidth="260"></ColumnDefinition>
+                        <ColumnDefinition MinWidth="204" MaxWidth="260"></ColumnDefinition>
+                        <ColumnDefinition></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid Grid.Column="1">
+                        <Grid.RowDefinitions>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Grid.Row="0" FontSize="16" Foreground="white" FontWeight="SemiBold" Text="Monday" Style="{StaticResource CenterTextBlock}"></TextBlock>
+                        <Image Grid.Row="1" RenderOptions.BitmapScalingMode="HighQuality" Source="Images/pin.png"></Image>
+                        <TextBlock Grid.Row="2" FontSize="22" FontWeight="SemiBold" Foreground="white" Text="23°C / 10°C" Style="{StaticResource CenterTextBlock}"></TextBlock>
+                        <TextBlock Grid.Row="3" FontSize="16" Foreground="white" Text="Small description" Style="{StaticResource CenterTextBlock}"></TextBlock>
+
+                    </Grid>
+
+                    <Grid Grid.Column="2">
+                        <Grid.RowDefinitions>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Grid.Row="0" FontSize="16" Foreground="white" FontWeight="SemiBold" Text="Tuesday" Style="{StaticResource CenterTextBlock}"></TextBlock>
+                        <Image Grid.Row="1" RenderOptions.BitmapScalingMode="HighQuality" Source="Images/pin.png"></Image>
+                        <TextBlock Grid.Row="2" FontSize="22" FontWeight="SemiBold" Foreground="white" Text="18°C / 9°C" Style="{StaticResource CenterTextBlock}"></TextBlock>
+                        <TextBlock Grid.Row="3" FontSize="16" Foreground="white" Text="Small description" Style="{StaticResource CenterTextBlock}"></TextBlock>
+
+                    </Grid>
+
+                    <Grid Grid.Column="3">
+                        <Grid.RowDefinitions>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Grid.Row="0" FontSize="16" Foreground="white" FontWeight="SemiBold" Text="Wednesday" Style="{StaticResource CenterTextBlock}"></TextBlock>
+                        <Image Grid.Row="1" RenderOptions.BitmapScalingMode="HighQuality" Source="Images/pin.png"></Image>
+                        <TextBlock Grid.Row="2" FontSize="22" FontWeight="SemiBold" Foreground="white" Text="18°C / 10°C" Style="{StaticResource CenterTextBlock}"></TextBlock>
+                        <TextBlock Grid.Row="3" FontSize="16" Foreground="white" Text="Small description" Style="{StaticResource CenterTextBlock}"></TextBlock>
+
+                    </Grid>
+
+                    <Grid Grid.Column="4">
+                        <Grid.RowDefinitions>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Grid.Row="0" FontSize="16" Foreground="white" FontWeight="SemiBold" Text="Thursday" Style="{StaticResource CenterTextBlock}"></TextBlock>
+                        <Image Grid.Row="1" RenderOptions.BitmapScalingMode="HighQuality" Source="Images/pin.png"></Image>
+                        <TextBlock Grid.Row="2" FontSize="22" FontWeight="SemiBold" Foreground="white" Text="24°C / 11°C" Style="{StaticResource CenterTextBlock}"></TextBlock>
+                        <TextBlock Grid.Row="3" FontSize="16" Foreground="white" Text="Small description" Style="{StaticResource CenterTextBlock}"></TextBlock>
+
+                    </Grid>
+
+                    <Grid Grid.Column="5">
+                        <Grid.RowDefinitions>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Grid.Row="0" FontSize="16" Foreground="white" FontWeight="SemiBold" Text="Friday" Style="{StaticResource CenterTextBlock}"></TextBlock>
+                        <Image Grid.Row="1" RenderOptions.BitmapScalingMode="HighQuality" Source="Images/pin.png"></Image>
+                        <TextBlock Grid.Row="2" FontSize="22" FontWeight="SemiBold" Foreground="white" Text="15°C / 5°C" Style="{StaticResource CenterTextBlock}"></TextBlock>
+                        <TextBlock Grid.Row="3" FontSize="16" Foreground="white" Text="Small description" Style="{StaticResource CenterTextBlock}"></TextBlock>
+
+                    </Grid>
+
+
+
+                </Grid>
+
+                <Grid Height="300" Margin="0,20,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition MaxWidth="300"></ColumnDefinition>
+                        <ColumnDefinition MinWidth="850"></ColumnDefinition>
+                        <ColumnDefinition MaxWidth="300"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+
+                    <Canvas x:Name="WeatherByHoursCanvas" Grid.Column="1">
+                        
+                        <TextBlock x:Name="WeatherHour1" Text="00:00" Canvas.Bottom="0" FontSize="16" Foreground="White"/>
+                        <TextBlock x:Name="WeatherHour2" Text="06:00" Canvas.Bottom="0" FontSize="16" Foreground="White"/>
+                        <TextBlock x:Name="WeatherHour3" Text="12:00" Canvas.Bottom="0" FontSize="16" Foreground="White"/>
+                        <TextBlock x:Name="WeatherHour4" Text="18:00" Canvas.Bottom="0" FontSize="16" Foreground="White"/>
+                        <TextBlock x:Name="WeatherHour5" Text="24:00" Canvas.Bottom="0" FontSize="16" Foreground="White"/>
+                        <TextBlock x:Name="WeatherHourMinTemp" Text="MinTemp" Canvas.Top="0" FontSize="16" Foreground="White"/>
+                        <TextBlock x:Name="WeatherHourMaxTemp" Text="MaxTemp" Canvas.Top="0" FontSize="16" Foreground="White"/>
+
+
+                    </Canvas>
+                    
+                </Grid>
+                
             </StackPanel>
         </ScrollViewer>
 
