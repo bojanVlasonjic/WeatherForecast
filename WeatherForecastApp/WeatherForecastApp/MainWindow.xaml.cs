@@ -117,12 +117,6 @@ namespace WeatherForecastApp
             line2.Points = ps2;
             WeatherByHoursCanvas.Children.Add(line2);
 
-
-
-
-
-
-
             PointCollection points = new PointCollection();
             int i;
             for (i = 0; i < degrees.Length; i++)
