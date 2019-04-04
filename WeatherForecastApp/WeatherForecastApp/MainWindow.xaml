@@ -5,8 +5,49 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WeatherForecastApp"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
-    <Grid>
+        Title="Weather" MinHeight="600" Height="600" MinWidth="1024" Width="1024" WindowStartupLocation="CenterScreen">
+
+    <Window.Resources>
+        <Image x:Key="ReloadImage" RenderOptions.BitmapScalingMode="HighQuality" Source="Images/reload.png" />
+        <Image x:Key="PinImage" RenderOptions.BitmapScalingMode="HighQuality" Source="Images/pin.png" />
+    </Window.Resources>
+    <DockPanel>
+        <DockPanel DockPanel.Dock="Top" Height="50" Background="#f9f9f9">
+            <TextBox DockPanel.Dock="Right" Background="#f0f0f0" BorderThickness="0" Margin="0,0,5,0" Text="Search" Padding="10" Width="300" Height="40" VerticalAlignment="Stretch" FontSize="16" VerticalContentAlignment="Center"></TextBox>
+
+            <Button DockPanel.Dock="Right" ToolTip="Refresh"  Width="60" Background="#f0f0f0" Height="40" Margin="0,0,5,0" BorderThickness="0" Content="{StaticResource ReloadImage}"></Button>
+            <Button DockPanel.Dock="Right" ToolTip="Add to favorites" Width="60" Background="#f0f0f0" Height="40" Margin="0,0,5,0" BorderThickness="0" Content="{StaticResource PinImage}"></Button>
+            <TextBlock DockPanel.Dock="Left" VerticalAlignment="Center" FontWeight="DemiBold" Margin="10" Text="Weather Forecast" FontSize="16"></TextBlock>
+            <Button Width="0"></Button>
+
+        </DockPanel>
+        <ScrollViewer DockPanel.Dock="Top" HorizontalAlignment="Stretch" VerticalScrollBarVisibility="Auto">
+            <StackPanel>
+                <Grid Height="450" ShowGridLines="False">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition></ColumnDefinition>
+                        <ColumnDefinition></ColumnDefinition>
+                        <ColumnDefinition></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Column="1" Text="Novi Sad, Srbija" FontWeight="SemiBold" FontSize="42" VerticalAlignment="Bottom" Margin="10" HorizontalAlignment="Center"></TextBlock>
+                    
+                </Grid>
+            </StackPanel>
+        </ScrollViewer>
         
-    </Grid>
+
+
+    </DockPanel>
+
+
+
+
 </Window>
