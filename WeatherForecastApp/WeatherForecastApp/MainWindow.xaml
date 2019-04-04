@@ -10,23 +10,38 @@
     <Window.Resources>
         <Image x:Key="ReloadImage" RenderOptions.BitmapScalingMode="HighQuality" Source="Images/reload.png" />
         <Image x:Key="PinImage" RenderOptions.BitmapScalingMode="HighQuality" Source="Images/pin.png" />
+
+        <Style x:Key="CenterTextBlock" TargetType="TextBlock">
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+
+        <Style x:Key="WhiteText" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="White"></Setter>
+        </Style>
+
+
     </Window.Resources>
     <DockPanel>
-        <DockPanel DockPanel.Dock="Top" Height="50" Background="#f9f9f9">
-            <TextBox DockPanel.Dock="Right" Background="#f0f0f0" BorderThickness="0" Margin="0,0,5,0" Text="Search" Padding="10" Width="300" Height="40" VerticalAlignment="Stretch" FontSize="16" VerticalContentAlignment="Center"></TextBox>
+        <DockPanel DockPanel.Dock="Top" Height="50" Background="#6098b2">
+            <TextBox DockPanel.Dock="Right" Background="#598da5" Foreground="White" BorderThickness="0" Margin="0,0,5,0" Text="Search" Padding="10" Width="300" Height="40" VerticalAlignment="Stretch" FontSize="16" VerticalContentAlignment="Center"></TextBox>
 
-            <Button DockPanel.Dock="Right" ToolTip="Refresh"  Width="60" Background="#f0f0f0" Height="40" Margin="0,0,5,0" BorderThickness="0" Content="{StaticResource ReloadImage}"></Button>
-            <Button DockPanel.Dock="Right" ToolTip="Add to favorites" Width="60" Background="#f0f0f0" Height="40" Margin="0,0,5,0" BorderThickness="0" Content="{StaticResource PinImage}"></Button>
-            <TextBlock DockPanel.Dock="Left" VerticalAlignment="Center" FontWeight="DemiBold" Margin="10" Text="Weather Forecast" FontSize="16"></TextBlock>
+            <Button DockPanel.Dock="Right" ToolTip="Refresh"  Width="60" Background="#6098b2" Height="40" Margin="0,0,5,0" BorderThickness="0" Content="{StaticResource ReloadImage}"></Button>
+            <Button DockPanel.Dock="Right" ToolTip="Add to favorites" Width="60" Background="#6098b2" Height="40" Margin="0,0,5,0" BorderThickness="0" Content="{StaticResource PinImage}"></Button>
+            <TextBlock Style="{StaticResource WhiteText}" DockPanel.Dock="Left" VerticalAlignment="Center" FontWeight="DemiBold" Margin="10" Text="Weather Forecast" FontSize="16"></TextBlock>
             <Button Width="0"></Button>
 
         </DockPanel>
         <ScrollViewer DockPanel.Dock="Top" HorizontalAlignment="Stretch" VerticalScrollBarVisibility="Auto">
             <StackPanel>
-                <Grid Height="450" ShowGridLines="False">
+                <Grid Height="510" ShowGridLines="False">
+                    <Grid.Background>
+                        <ImageBrush ImageSource="Images/start_background.jpg" Stretch="UniformToFill"/>
+                    </Grid.Background>
+                    
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition></ColumnDefinition>
-                        <ColumnDefinition></ColumnDefinition>
+                        <ColumnDefinition Width="400"></ColumnDefinition>
                         <ColumnDefinition></ColumnDefinition>
                     </Grid.ColumnDefinitions>
 
@@ -37,7 +52,49 @@
                         <RowDefinition></RowDefinition>
                     </Grid.RowDefinitions>
 
-                    <TextBlock Grid.Column="1" Text="Novi Sad, Srbija" FontWeight="SemiBold" FontSize="42" VerticalAlignment="Bottom" Margin="10" HorizontalAlignment="Center"></TextBlock>
+                    <TextBlock Style="{StaticResource WhiteText}" Grid.Column="1" Text="Novi Sad, RS" FontWeight="SemiBold" FontSize="42"
+                               VerticalAlignment="Bottom" Margin="0,0,0,0" HorizontalAlignment="Center"></TextBlock>
+                    <Grid Grid.Column="1" Grid.Row="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition></ColumnDefinition>
+                            <ColumnDefinition></ColumnDefinition>
+                            <ColumnDefinition></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+
+                        <Image Grid.Column="0" RenderOptions.BitmapScalingMode="HighQuality" Source="Images/pin.png"></Image>
+                        <TextBlock Grid.Column="1" Grid.ColumnSpan="2" Text="20°C" FontSize="94"
+                                   Style="{StaticResource WhiteText}" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
+                        
+                    </Grid>
+
+                    <Grid Grid.Column="1" Grid.Row="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition></ColumnDefinition>
+                            <ColumnDefinition></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Grid.Column="0" Grid.Row="0" Foreground="White" Style="{StaticResource CenterTextBlock}"
+                                   FontSize="15" Text="Humidity: 55"></TextBlock>
+                        <TextBlock Grid.Column="1" Grid.Row="0" Foreground="White" Style="{StaticResource CenterTextBlock}"
+                                   FontSize="15" Text="Wind speed: 15 km/h"></TextBlock>
+                        <TextBlock Grid.Column="0" Grid.Row="1" Foreground="White" Style="{StaticResource CenterTextBlock}"
+                                   FontSize="15" Text="Visibility: 30 km"></TextBlock>
+                        <TextBlock Grid.Column="1" Grid.Row="1" Foreground="White" Style="{StaticResource CenterTextBlock}"
+                                   FontSize="15" Text="Pressure: 1008"></TextBlock>
+                        <TextBlock Grid.Column="0" Grid.Row="2" Foreground="White" Style="{StaticResource CenterTextBlock}"
+                                   FontSize="15" Text="Minimum: 10°C"></TextBlock>
+                        <TextBlock Grid.Column="1" Grid.Row="2" Foreground="White" Style="{StaticResource CenterTextBlock}"
+                                   FontSize="15" Text="Maximum: 23°C"></TextBlock>
+
+                    </Grid>
                     
                 </Grid>
             </StackPanel>
