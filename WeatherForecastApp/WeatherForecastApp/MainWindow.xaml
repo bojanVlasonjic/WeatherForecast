@@ -13,7 +13,7 @@
     </Window.Resources>
     <DockPanel>
         <DockPanel DockPanel.Dock="Top" Height="50" Background="#f9f9f9">
-            <TextBox DockPanel.Dock="Right" Background="#f0f0f0" BorderThickness="0" Margin="0,0,5,0" Text="Search" Padding="10" Width="300" Height="40" VerticalAlignment="Stretch" FontSize="16" VerticalContentAlignment="Center"></TextBox>
+            <TextBox x:Name="searchTextBox" DockPanel.Dock="Right" Background="#f0f0f0" BorderThickness="0" Margin="0,0,5,0" Text="Search..." Padding="10" Width="300" Height="40" VerticalAlignment="Stretch" FontSize="16" VerticalContentAlignment="Center" TextChanged="searchTextBox_TextChanged"></TextBox>
 
             <Button DockPanel.Dock="Right" ToolTip="Refresh"  Width="60" Background="#f0f0f0" Height="40" Margin="0,0,5,0" BorderThickness="0" Content="{StaticResource ReloadImage}"></Button>
             <Button DockPanel.Dock="Right" ToolTip="Add to favorites" Width="60" Background="#f0f0f0" Height="40" Margin="0,0,5,0" BorderThickness="0" Content="{StaticResource PinImage}"></Button>
