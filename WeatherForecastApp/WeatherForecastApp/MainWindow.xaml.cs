@@ -12,6 +12,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Net.Http;
+using System.Net.Http.Headers;
 
 namespace WeatherForecastApp
 {
@@ -21,6 +23,8 @@ namespace WeatherForecastApp
     public partial class MainWindow : Window
     {
 
+        static HttpClient client = new HttpClient(); //used for multiple requests to server
+        static RestRequest rest_request = new RestRequest(); //object used for sending request to server
 
         public MainWindow()
         {
@@ -29,7 +33,13 @@ namespace WeatherForecastApp
             //adding focus to search text box
             this.searchTextBox.GotFocus += searchTextBox_OnFocus;
             this.searchTextBox.LostFocus += searchTextBox_OnDefocus;
+
+            //adding an on close event - disposing of the client
+            this.Closed += new EventHandler(MainWindow_Closed);
+
+            sendRequest("Novi Sad"); //testni primer
         }
+
 
         /* Search text box focus methods */
         private void searchTextBox_OnFocus(object sender, EventArgs e)
@@ -40,7 +50,7 @@ namespace WeatherForecastApp
 
         private void searchTextBox_OnDefocus(object sender, EventArgs e)
         {
-            if(searchTextBox.Text.Equals(""))
+            if (searchTextBox.Text.Equals(""))
                 searchTextBox.Text = "Search...";
         }
 
@@ -48,16 +58,15 @@ namespace WeatherForecastApp
         {
 
         }
-        
 
         private void loadWeatherByHours(object sender, EventArgs e)
         {
 
-            int[] degrees = { 6, 11, 13, 15, 22, 20, 16, 11, 14, 12, 10, 7, 4, 6, 8};
+            int[] degrees = { 6, 11, 13, 15, 22, 20, 16, 11, 14, 12, 10, 7, 4, 6, 8 };
             int maxTemp = degrees.Max();
             int minTemp = degrees.Min();
             int threshold = 5;
-            
+
             double maxHeight = WeatherByHoursCanvas.ActualHeight;
             double maxWidth = WeatherByHoursCanvas.ActualWidth;
             double step = maxWidth / (degrees.Length - 1);
@@ -80,7 +89,7 @@ namespace WeatherForecastApp
 
 
             WeatherHourMinTemp.Text = minTemp.ToString() + "°C";
-            WeatherHourMinTemp.SetValue(Canvas.TopProperty, maxHeight - WeatherHourMinTemp.ActualHeight/2 - minTemp * maxHeight / (maxTemp + threshold));
+            WeatherHourMinTemp.SetValue(Canvas.TopProperty, maxHeight - WeatherHourMinTemp.ActualHeight / 2 - minTemp * maxHeight / (maxTemp + threshold));
             WeatherHourMinTemp.SetValue(Canvas.LeftProperty, -WeatherHourMinTemp.ActualWidth);
 
             PointCollection ps1 = new PointCollection();
@@ -111,24 +120,24 @@ namespace WeatherForecastApp
 
 
 
-            
+
 
 
             PointCollection points = new PointCollection();
             int i;
             for (i = 0; i < degrees.Length; i++)
             {
-                double y = maxHeight - degrees[i]*maxHeight/ (maxTemp + threshold);
+                double y = maxHeight - degrees[i] * maxHeight / (maxTemp + threshold);
                 points.Add(new Point(i * step, y));
             }
-            
+
 
             step = maxWidth / 4;
             for (i = 0; i < 5; i++)
             {
                 PointCollection ps = new PointCollection();
-                ps.Add(new Point(i*step, 0));
-                ps.Add(new Point(i*step, maxHeight));
+                ps.Add(new Point(i * step, 0));
+                ps.Add(new Point(i * step, maxHeight));
                 Polyline line = new Polyline();
                 line.StrokeThickness = 1;
                 line.Stroke = Brushes.White;
@@ -137,11 +146,11 @@ namespace WeatherForecastApp
                 WeatherByHoursCanvas.Children.Add(line);
             }
 
-             WeatherHour1.SetValue(Canvas.LeftProperty, 0 - WeatherHour1.ActualWidth / 2);
-             WeatherHour2.SetValue(Canvas.LeftProperty, maxWidth * 1 / 4 - WeatherHour2.ActualWidth / 2);
-             WeatherHour3.SetValue(Canvas.LeftProperty, maxWidth * 2 / 4 - WeatherHour3.ActualWidth / 2);
-             WeatherHour4.SetValue(Canvas.LeftProperty, maxWidth * 3 / 4 - WeatherHour4.ActualWidth / 2);
-             WeatherHour5.SetValue(Canvas.LeftProperty, maxWidth * 4 / 4 - WeatherHour5.ActualWidth / 2);
+            WeatherHour1.SetValue(Canvas.LeftProperty, 0 - WeatherHour1.ActualWidth / 2);
+            WeatherHour2.SetValue(Canvas.LeftProperty, maxWidth * 1 / 4 - WeatherHour2.ActualWidth / 2);
+            WeatherHour3.SetValue(Canvas.LeftProperty, maxWidth * 2 / 4 - WeatherHour3.ActualWidth / 2);
+            WeatherHour4.SetValue(Canvas.LeftProperty, maxWidth * 3 / 4 - WeatherHour4.ActualWidth / 2);
+            WeatherHour5.SetValue(Canvas.LeftProperty, maxWidth * 4 / 4 - WeatherHour5.ActualWidth / 2);
 
             Polyline polyline = new Polyline();
             polyline.StrokeThickness = 3;
@@ -149,13 +158,29 @@ namespace WeatherForecastApp
             polyline.Points = points;
 
             WeatherByHoursCanvas.Children.Add(polyline);
-            
+
 
         }
 
-        private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
+
+
+
+        /* Main window on close method */
+        public void MainWindow_Closed(object sender, EventArgs e)
+        {
+            //Dispose once all HttpClient calls are complete
+            client.Dispose();
+        }
+
+
+        /* Method used for sending a request to server */
+
+        public void sendRequest(string cityName)
         {
 
+            rest_request.CityName = cityName;
+
+            rest_request.sendRequestToOpenWeather(client);
         }
     }
 }
