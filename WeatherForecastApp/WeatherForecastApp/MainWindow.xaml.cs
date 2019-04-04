@@ -20,9 +20,33 @@ namespace WeatherForecastApp
     /// </summary>
     public partial class MainWindow : Window
     {
+
+
         public MainWindow()
         {
             InitializeComponent();
+
+            //adding focus to search text box
+            this.searchTextBox.GotFocus += searchTextBox_OnFocus;
+            this.searchTextBox.LostFocus += searchTextBox_OnDefocus;
+        }
+
+        /* Search text box focus methods */
+        private void searchTextBox_OnFocus(object sender, EventArgs e)
+        {
+            if (searchTextBox.Text.Equals("Search..."))
+                searchTextBox.Text = "";
+        }
+
+        private void searchTextBox_OnDefocus(object sender, EventArgs e)
+        {
+            if(searchTextBox.Text.Equals(""))
+                searchTextBox.Text = "Search...";
+        }
+
+        private void searchTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+
         }
     }
 }
