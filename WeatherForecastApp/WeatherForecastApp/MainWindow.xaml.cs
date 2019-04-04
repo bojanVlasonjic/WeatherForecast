@@ -37,7 +37,7 @@ namespace WeatherForecastApp
             //adding an on close event - disposing of the client
             this.Closed += new EventHandler(MainWindow_Closed);
 
-            sendRequest();
+            sendRequest("Novi Sad"); //testni primer
         }
 
 
@@ -63,21 +63,18 @@ namespace WeatherForecastApp
         /* Main window on close method */
         public void MainWindow_Closed(object sender, EventArgs e)
         {
-
             //Dispose once all HttpClient calls are complete
             client.Dispose();
-
         }
 
 
         /* Method used for sending a request to server */
-
-        public void sendRequest()
+       
+        public void sendRequest(string cityName)
         {
-            //postavi naziv grada u rest_request objektu, razmake odvoji sa '+'
-            rest_request.CityName = "Novi+Sad";
-
-            //posalji zahtev, kao parametar prosledi klijenta
+            
+            rest_request.CityName = cityName;
+ 
             rest_request.sendRequestToOpenWeather(client);
         }
     }
