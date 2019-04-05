@@ -25,6 +25,7 @@ namespace WeatherForecastApp
 
         static HttpClient client = new HttpClient(); //used for multiple requests to server
         static RestRequest rest_request = new RestRequest(); //object used for sending request to server
+        static OpenWeatherCities openWeatherCities;
 
         public MainWindow()
         {
@@ -41,23 +42,143 @@ namespace WeatherForecastApp
 
         }
 
+        private void UpdateSearchTextBox(string searchValue)
+        {
+
+            
+            if (SearchSelectionWindow.Visibility == Visibility.Hidden)
+            {
+                SearchSelectionWindow.Visibility = Visibility.Visible;
+            }
+
+            if (openWeatherCities == null)
+            {
+                return;
+            }
+
+            else if (openWeatherCities.Cities == null)
+            {
+                return;
+            }
+
+            if (searchValue.Equals(""))
+            {
+
+                for (int i = 0; i < 3; i++)
+                {
+                    if (i == 0)
+                    {
+                        SearchOption1_Text1.Text = openWeatherCities.Cities[i].name;
+                        SearchOption1_Text2.Text = openWeatherCities.Cities[i].country;
+                    }
+
+                    else if (i == 1)
+                    {
+                        SearchOption2_Text1.Text = openWeatherCities.Cities[i].name;
+                        SearchOption2_Text2.Text = openWeatherCities.Cities[i].country;
+                    }
+
+                    else if (i == 2)
+                    {
+                        SearchOption3_Text1.Text = openWeatherCities.Cities[i].name;
+                        SearchOption3_Text2.Text = openWeatherCities.Cities[i].country;
+                    }
+
+                }
+            }
+
+            else
+            {
+
+
+                SearchOption1.Visibility = Visibility.Hidden;
+                SearchOption2.Visibility = Visibility.Hidden;
+                SearchOption3.Visibility = Visibility.Hidden;
+
+                List<string> cityNames = new List<string>();
+                for (int i = 0; i < 3; i++)
+                {
+
+                    string name = "";
+                    string country = "";
+                    bool continueSearch = false;
+                    foreach (City c in openWeatherCities.Cities)
+                    {
+                        if (c.name.IndexOf(searchValue, StringComparison.OrdinalIgnoreCase)>=0 && !cityNames.Contains(c.name + " " + c.country))
+                        {
+                            name = c.name;
+                            country = c.country;
+                            cityNames.Add(name + " " + country);
+                            continueSearch = true;
+
+                            if (i == 0)
+                            {
+                                SearchOption1.Visibility = Visibility.Visible;
+                                SearchOption1_Text1.Text = name;
+                                SearchOption1_Text2.Text = country;
+                            }
+
+                            else if (i == 1)
+                            {
+                                SearchOption2.Visibility = Visibility.Visible;
+                                SearchOption2_Text1.Text = name;
+                                SearchOption2_Text2.Text = country;
+                            }
+
+                            else if (i == 2)
+                            {
+                                SearchOption3.Visibility = Visibility.Visible;
+                                SearchOption3_Text1.Text = name;
+                                SearchOption3_Text2.Text = country;
+                            }
+
+
+                            break;
+                        }
+                    }
+
+
+                    if (!continueSearch)        //increase performance of search (prevent additional search if not necessary)
+                    {
+                        break;
+                    }
+
+
+                }
+            }
+        }
 
         /* Search text box focus methods */
         private void searchTextBox_OnFocus(object sender, EventArgs e)
         {
             if (searchTextBox.Text.Equals("Search..."))
+            {
                 searchTextBox.Text = "";
+                SearchSelectionWindow.Visibility = Visibility.Visible;
+                this.UpdateSearchTextBox(searchTextBox.Text);
+            }
+                
+            
         }
 
         private void searchTextBox_OnDefocus(object sender, EventArgs e)
         {
             if (searchTextBox.Text.Equals(""))
+            {
                 searchTextBox.Text = "Search...";
+                SearchSelectionWindow.Visibility = Visibility.Hidden;
+            }
         }
 
         private void searchTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
+            string textValue = searchTextBox.Text;
+            if (textValue.Equals("") || textValue.Equals("Search..."))
+            {
+                return;
+            }
 
+            UpdateSearchTextBox(textValue);
         }
 
         /* Graph method */
@@ -171,7 +292,7 @@ namespace WeatherForecastApp
 
         private void loadWeatherByHours(object sender, EventArgs e)
         {
-
+           openWeatherCities = new OpenWeatherCities(); //WARNING! Loading huge data (cities)
            ReloadWeatherByHours(new int[] { 5, 7, 10, 15, 16, 20, 18, 14, 11, 8 ,2});
 
 
@@ -261,6 +382,84 @@ namespace WeatherForecastApp
             //TODO: update za ostalo...
         }
 
+        private void SearchOption1_MouseEnter(object sender, MouseEventArgs e)
+        {
 
+            Brush brush = (SolidColorBrush)(new BrushConverter().ConvertFrom("#276582")); 
+            SearchOption1_Rectangle.Fill = brush;
+        }
+
+        private void SearchOption1_MouseLeave(object sender, MouseEventArgs e)
+        {
+            Brush brush = (SolidColorBrush)(new BrushConverter().ConvertFrom("#205770"));
+            SearchOption1_Rectangle.Fill = brush;
+        }
+
+        private void SearchOption2_MouseEnter(object sender, MouseEventArgs e)
+        {
+            Brush brush = (SolidColorBrush)(new BrushConverter().ConvertFrom("#276582"));
+            SearchOption2_Rectangle.Fill = brush;
+        }
+
+        private void SearchOption2_MouseLeave(object sender, MouseEventArgs e)
+        {
+            Brush brush = (SolidColorBrush)(new BrushConverter().ConvertFrom("#205770"));
+            SearchOption2_Rectangle.Fill = brush;
+        }
+
+        private void SearchOption3_MouseEnter(object sender, MouseEventArgs e)
+        {
+            Brush brush = (SolidColorBrush)(new BrushConverter().ConvertFrom("#276582"));
+            SearchOption3_Rectangle.Fill = brush;
+        }
+
+        private void SearchOption3_MouseLeave(object sender, MouseEventArgs e)
+        {
+            Brush brush = (SolidColorBrush)(new BrushConverter().ConvertFrom("#205770"));
+            SearchOption3_Rectangle.Fill = brush;
+        }
+
+        private void SearchOption1_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            searchTextBox.Text = SearchOption1_Text1.Text;
+            
+            RootObject root = sendRequest(SearchOption1_Text1.Text);
+            if (root != null)
+            {
+                updateBasicTemperatureData(root);
+            }
+
+
+            SearchSelectionWindow.Visibility = Visibility.Hidden;
+
+        }
+
+        private void SearchOption2_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            searchTextBox.Text = SearchOption2_Text1.Text;
+
+            RootObject root = sendRequest(SearchOption2_Text1.Text);
+            if (root != null)
+            {
+                updateBasicTemperatureData(root);
+            }
+
+
+            SearchSelectionWindow.Visibility = Visibility.Hidden;
+        }
+
+        private void SearchOption3_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            searchTextBox.Text = SearchOption3_Text1.Text;
+
+            RootObject root = sendRequest(SearchOption3_Text1.Text);
+            if (root != null)
+            {
+                updateBasicTemperatureData(root);
+            }
+
+
+            SearchSelectionWindow.Visibility = Visibility.Hidden;
+        }
     }
 }

@@ -63,9 +63,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="City.cs" />
     <Compile Include="Clouds.cs" />
     <Compile Include="Coord.cs" />
     <Compile Include="Main.cs" />
+    <Compile Include="OpenWeatherCities.cs" />
     <Compile Include="RestRequest.cs" />
     <Compile Include="RestResponse.cs" />
     <Compile Include="RootObject.cs" />
@@ -103,6 +105,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="data\city.list.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
