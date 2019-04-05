@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace WeatherForecastApp
 {
-    class Sys
+    public class Sys
     {
         public int type { get; set; }
         public int id { get; set; }

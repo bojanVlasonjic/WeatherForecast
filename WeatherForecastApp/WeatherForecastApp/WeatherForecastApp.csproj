@@ -67,6 +67,7 @@
     <Compile Include="Coord.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="RestRequest.cs" />
+    <Compile Include="RestResponse.cs" />
     <Compile Include="RootObject.cs" />
     <Compile Include="Sys.cs" />
     <Compile Include="Weather.cs" />

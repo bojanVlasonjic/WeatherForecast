@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Net.Http.Formatting;
 
 namespace WeatherForecastApp
 {
@@ -24,33 +25,56 @@ namespace WeatherForecastApp
 
 
         //send request method
-        public bool sendRequestToOpenWeather(HttpClient client)
+        public RestResponse sendRequestToOpenWeather(HttpClient client)
         {
+
+            RestResponse restResponse = new RestResponse();
 
             if(CityName == null)
             {
-                return false;
+                restResponse.Message = "City name is undefined";
+                return restResponse;
             }
 
-            client.BaseAddress = new Uri(URL);
+            //if it's the first time submitting a request
+            if(client.BaseAddress == null)
+            {
+                client.BaseAddress = new Uri(URL);
 
-            // Add an Accept header for JSON format.
-            client.DefaultRequestHeaders.Accept.Add(
-            new MediaTypeWithQualityHeaderValue("application/json"));
+                // Add an Accept header for JSON format.
+                client.DefaultRequestHeaders.Accept.Add(
+                new MediaTypeWithQualityHeaderValue("application/json"));
+            }
+            
+            HttpResponseMessage response;
+            //send request and get the response
+            try
+            {
+                response = client.GetAsync("?q=" + CityName + API_KEY).Result;  // Blocking call! Program will wait here until a response is received or a timeout occurs.
 
-            // List data response.
-            HttpResponseMessage response = client.GetAsync("?q=" + CityName + API_KEY).Result;  // Blocking call! Program will wait here until a response is received or a timeout occurs.
+            }
+            //if there is no internet connection the exception below e occurs
+            catch (AggregateException)
+            {
+                restResponse.Message = "No internet connection";
+                return restResponse;
+            }
+
+
             if (response.IsSuccessStatusCode)
             {
                 // Parse the response body.
-                //var dataObjects = response.Content.ReadAsAsync<IEnumerable<DataObject>>().Result;  //Make sure to add a reference to System.Net.Http.Formatting.dll
-                var data = response.Content.ReadAsStringAsync();
-                return true;
+                RootObject parsedData = response.Content.ReadAsAsync<RootObject>().Result;
+                //var data = response.Content.ReadAsStringAsync();
+                restResponse.Message = "Success";
+                restResponse.Root = parsedData;
             }
             else
             {
-                return false;
+                restResponse.Message = $"Can't find city with name {CityName}";
             }
+
+            return restResponse;
 
         }
 

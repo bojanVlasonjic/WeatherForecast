@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace WeatherForecastApp
 {
-    class RootObject
+    public class RootObject
     {
         public Coord coord { get; set; }
         public List<Weather> weather { get; set; }
