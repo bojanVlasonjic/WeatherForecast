@@ -63,7 +63,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Clouds.cs" />
+    <Compile Include="Coord.cs" />
+    <Compile Include="Main.cs" />
     <Compile Include="RestRequest.cs" />
+    <Compile Include="RestResponse.cs" />
+    <Compile Include="RootObject.cs" />
+    <Compile Include="Sys.cs" />
+    <Compile Include="Weather.cs" />
+    <Compile Include="Wind.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

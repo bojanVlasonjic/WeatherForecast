@@ -37,7 +37,6 @@ namespace WeatherForecastApp
             //adding an on close event - disposing of the client
             this.Closed += new EventHandler(MainWindow_Closed);
 
-            sendRequest("Novi Sad"); //testni primer
         }
 
 
@@ -59,6 +58,7 @@ namespace WeatherForecastApp
 
         }
 
+        /* Graph method */
         private void loadWeatherByHours(object sender, EventArgs e)
         {
 
@@ -157,8 +157,6 @@ namespace WeatherForecastApp
         }
 
 
-
-
         /* Main window on close method */
         public void MainWindow_Closed(object sender, EventArgs e)
         {
@@ -167,14 +165,76 @@ namespace WeatherForecastApp
         }
 
 
-        /* Method used for sending a request to server */
+        /* Button events */
+        private void addToFavouritesBtn_Click(object sender, RoutedEventArgs e)
+        {
 
-        public void sendRequest(string cityName)
+        }
+
+        private void refreshBtn_Click(object sender, RoutedEventArgs e)
+        {
+            //za sad po default-u dobavi podatke za novi sad
+            RootObject root = sendRequest("Novi Sad");
+
+            //refresh the displayed data
+            if(root != null)
+            {
+                updateBasicTemperatureData(root);
+            }
+
+        }
+
+
+        /* Method used for sending a request to server */
+        public RootObject sendRequest(string cityName)
         {
 
             rest_request.CityName = cityName;
 
-            rest_request.sendRequestToOpenWeather(client);
+            RestResponse response = rest_request.sendRequestToOpenWeather(client); //get response from server
+
+            if (response.Root == null)
+            {
+                MessageBox.Show(response.Message); //something wen't wrong in the response
+                return null;
+            }
+
+            return response.Root;
         }
+
+
+        /* AUXILIARY METHODS */
+        public double convertKelvinToCelsius(double kelvinVal)
+        {
+            double celsius = kelvinVal - 273.15;
+            return Math.Round(celsius);
+        }
+
+        public double convertMetersToKilometers(double meters)
+        {
+            double kms = meters / 1000;
+            return Math.Round(kms);
+        }
+
+        public void updateBasicTemperatureData(RootObject root)
+        {
+            cityNameTextBlock.Text = $"{root.name}, {root.sys.country}";
+            temperatureTextBlock.Text = $"{convertKelvinToCelsius(root.main.temp)}°C";
+
+            //TODO: change icon if necessary
+
+            humidityTextBlock.Text = $"Humidity: {root.main.humidity}%";
+            visibilityTextBlock.Text = $"Visibility: {convertMetersToKilometers(root.visibility)} km";
+            pressureTextBlock.Text = $"Pressure: {root.main.pressure} mbar";
+            minTempTextBlock.Text = $"Minimum: {convertKelvinToCelsius(root.main.temp_min)}°C";
+            maxTempTextBlock.Text = $"Maximum: {convertKelvinToCelsius(root.main.temp_max)}°C";
+            windSpeedTextBlock.Text = $"Wind speed: {root.wind.speed} m/s";
+
+            updateTimeTextBlock.Text = $"Last update at: {DateTime.Now.ToShortTimeString()}";
+
+            //TODO: update za ostalo...
+        }
+
+
     }
 }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace WeatherForecastApp
 {
-    class Main
+    public class Main
     {
         public double temp { get; set; }
         public int pressure { get; set; }
