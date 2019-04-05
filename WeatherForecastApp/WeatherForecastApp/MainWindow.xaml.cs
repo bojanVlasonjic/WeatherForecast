@@ -59,10 +59,9 @@ namespace WeatherForecastApp
 
         }
 
-        private void loadWeatherByHours(object sender, EventArgs e)
+        public void ReloadWeatherByHours(int[] degrees)
         {
-
-            int[] degrees = { 6, 11, 13, 15, 22, 20, 16, 11, 14, 12, 10, 7, 4, 6, 8 };
+            int averageTemp = (int)degrees.Average();
             int maxTemp = degrees.Max();
             int minTemp = degrees.Min();
             int threshold = 5;
@@ -86,15 +85,13 @@ namespace WeatherForecastApp
                 WeatherByHoursCanvas.Children.Remove(ui);
             }
 
-
-
             WeatherHourMinTemp.Text = minTemp.ToString() + "°C";
-            WeatherHourMinTemp.SetValue(Canvas.TopProperty, maxHeight - WeatherHourMinTemp.ActualHeight / 2 - minTemp * maxHeight / (maxTemp + threshold));
-            WeatherHourMinTemp.SetValue(Canvas.LeftProperty, -WeatherHourMinTemp.ActualWidth);
+            WeatherHourMinTemp.SetValue(Canvas.TopProperty, maxHeight - WeatherHourMinTemp.ActualHeight / 2 - (Math.Abs(minTemp) + minTemp + threshold / 2) * maxHeight / (maxTemp + threshold + Math.Abs(minTemp)));
+            WeatherHourMinTemp.SetValue(Canvas.LeftProperty, -WeatherHourMinTemp.ActualWidth - 10);
 
             PointCollection ps1 = new PointCollection();
-            ps1.Add(new Point(0, maxHeight - minTemp * maxHeight / (maxTemp + threshold)));
-            ps1.Add(new Point(maxWidth, maxHeight - minTemp * maxHeight / (maxTemp + threshold)));
+            ps1.Add(new Point(0, maxHeight - (Math.Abs(minTemp) + minTemp + threshold / 2) * maxHeight / (maxTemp + threshold + Math.Abs(minTemp))));
+            ps1.Add(new Point(maxWidth, maxHeight - (Math.Abs(minTemp) + minTemp + threshold / 2) * maxHeight / (maxTemp + threshold + Math.Abs(minTemp))));
             Polyline line1 = new Polyline();
             line1.StrokeThickness = 1;
             line1.Stroke = Brushes.White;
@@ -103,13 +100,29 @@ namespace WeatherForecastApp
             WeatherByHoursCanvas.Children.Add(line1);
 
 
+            WeatherHourAverageTemp.Text = averageTemp.ToString() + "°C";
+            WeatherHourAverageTemp.SetValue(Canvas.TopProperty, maxHeight - WeatherHourAverageTemp.ActualHeight / 2 - (Math.Abs(minTemp) + averageTemp + threshold / 2) * maxHeight / (maxTemp + threshold + Math.Abs(minTemp)));
+            WeatherHourAverageTemp.SetValue(Canvas.LeftProperty, -WeatherHourAverageTemp.ActualWidth - 10);
+
+            PointCollection ps3 = new PointCollection();
+            ps3.Add(new Point(0, maxHeight - (Math.Abs(minTemp) + averageTemp + threshold / 2) * maxHeight / (maxTemp + threshold + Math.Abs(minTemp))));
+            ps3.Add(new Point(maxWidth, maxHeight - (Math.Abs(minTemp) + averageTemp + threshold / 2) * maxHeight / (maxTemp + threshold + Math.Abs(minTemp))));
+            Polyline line3 = new Polyline();
+            line3.StrokeThickness = 1;
+            line3.Stroke = Brushes.White;
+            line3.StrokeDashArray = new DoubleCollection() { 10, 20 };
+            line3.Points = ps3;
+            WeatherByHoursCanvas.Children.Add(line3);
+
+
+
             WeatherHourMaxTemp.Text = maxTemp.ToString() + "°C";
-            WeatherHourMaxTemp.SetValue(Canvas.TopProperty, maxHeight - WeatherHourMaxTemp.ActualHeight / 2 - maxTemp * maxHeight / (maxTemp + threshold));
-            WeatherHourMaxTemp.SetValue(Canvas.LeftProperty, -WeatherHourMaxTemp.ActualWidth);
+            WeatherHourMaxTemp.SetValue(Canvas.TopProperty, maxHeight - WeatherHourMaxTemp.ActualHeight / 2 - (Math.Abs(minTemp) + maxTemp + threshold / 2) * maxHeight / (maxTemp + threshold + Math.Abs(minTemp)));
+            WeatherHourMaxTemp.SetValue(Canvas.LeftProperty, -WeatherHourMaxTemp.ActualWidth - 10);
 
             PointCollection ps2 = new PointCollection();
-            ps2.Add(new Point(0, maxHeight - maxTemp * maxHeight / (maxTemp + threshold)));
-            ps2.Add(new Point(maxWidth, maxHeight - maxTemp * maxHeight / (maxTemp + threshold)));
+            ps2.Add(new Point(0, maxHeight - (Math.Abs(minTemp) + maxTemp + threshold / 2) * maxHeight / (maxTemp + threshold + Math.Abs(minTemp))));
+            ps2.Add(new Point(maxWidth, maxHeight - (Math.Abs(minTemp) + maxTemp + threshold / 2) * maxHeight / (maxTemp + threshold + Math.Abs(minTemp))));
             Polyline line2 = new Polyline();
             line2.StrokeThickness = 1;
             line2.Stroke = Brushes.White;
@@ -121,7 +134,7 @@ namespace WeatherForecastApp
             int i;
             for (i = 0; i < degrees.Length; i++)
             {
-                double y = maxHeight - degrees[i] * maxHeight / (maxTemp + threshold);
+                double y = maxHeight - (Math.Abs(minTemp) + degrees[i] + threshold / 2) * maxHeight / (maxTemp + threshold + Math.Abs(minTemp));
                 points.Add(new Point(i * step, y));
             }
 
@@ -152,8 +165,19 @@ namespace WeatherForecastApp
             polyline.Points = points;
 
             WeatherByHoursCanvas.Children.Add(polyline);
+        }
+
+        private void loadWeatherByHours(object sender, EventArgs e)
+        {
+
+           ReloadWeatherByHours(new int[] { 5, 7, 10, 15, 16, 20, 18, 14, 11, 8 ,2});
 
 
+        }
+
+        private void WindowSizeChanged(object sender, EventArgs e)
+        {
+            ReloadWeatherByHours(new int[] { 5, 7, 10, 15, 16, 20, 18, 14, 11, 8, 2 });
         }
 
 
