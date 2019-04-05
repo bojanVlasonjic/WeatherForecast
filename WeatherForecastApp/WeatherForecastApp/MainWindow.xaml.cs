@@ -37,6 +37,8 @@ namespace WeatherForecastApp
             //adding an on close event - disposing of the client
             this.Closed += new EventHandler(MainWindow_Closed);
 
+            //TODO: inicijalni update za trenutnu lokaciju 
+
         }
 
 
