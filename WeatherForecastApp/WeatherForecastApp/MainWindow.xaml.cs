@@ -14,6 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Windows.Media.Animation;
 
 namespace WeatherForecastApp
 {
@@ -23,9 +24,16 @@ namespace WeatherForecastApp
     public partial class MainWindow : Window
     {
 
+        const string sunnyBackgroundPath = "data/images/sunny.jpg";
+        const string cloudyBackgroundPath = "data/images/cloudy.jpg";
+        const string snowyBackgroundPath = "data/images/snowy.jpg";
+        const string rainyBackgroundPath = "data/images/rainy.jpg";
+
+
         static HttpClient client = new HttpClient(); //used for multiple requests to server
         static RestRequest rest_request = new RestRequest(); //object used for sending request to server
         static OpenWeatherCities openWeatherCities;
+        static RootObject root;
 
         public MainWindow()
         {
@@ -290,10 +298,11 @@ namespace WeatherForecastApp
             WeatherByHoursCanvas.Children.Add(polyline);
         }
 
-        private void loadWeatherByHours(object sender, EventArgs e)
+        private void loadWeatherByHours(object sender, EventArgs e)                                     //Method called on window load
         {
-           openWeatherCities = new OpenWeatherCities(); //WARNING! Loading huge data (cities)
-           ReloadWeatherByHours(new int[] { 5, 7, 10, 15, 16, 20, 18, 14, 11, 8 ,2});
+            openWeatherCities = new OpenWeatherCities(); //WARNING! Loading huge data (cities)
+            ReloadWeatherByHours(new int[] { 5, 7, 10, 15, 16, 20, 18, 14, 11, 8 ,2});
+            
 
 
         }
@@ -315,18 +324,18 @@ namespace WeatherForecastApp
         /* Button events */
         private void addToFavouritesBtn_Click(object sender, RoutedEventArgs e)
         {
-
+            
         }
 
         private void refreshBtn_Click(object sender, RoutedEventArgs e)
         {
             //za sad po default-u dobavi podatke za novi sad
-            RootObject root = sendRequest("Novi Sad");
+            root = sendRequest("Novi Sad");
 
             //refresh the displayed data
             if(root != null)
             {
-                updateBasicTemperatureData(root);
+                ChangeDisplayData();    //replaced method xD
             }
 
         }
@@ -369,7 +378,7 @@ namespace WeatherForecastApp
             temperatureTextBlock.Text = $"{convertKelvinToCelsius(root.main.temp)}°C";
 
             //TODO: change icon if necessary
-
+            
             humidityTextBlock.Text = $"Humidity: {root.main.humidity}%";
             visibilityTextBlock.Text = $"Visibility: {convertMetersToKilometers(root.visibility)} km";
             pressureTextBlock.Text = $"Pressure: {root.main.pressure} mbar";
@@ -380,6 +389,35 @@ namespace WeatherForecastApp
             updateTimeTextBlock.Text = $"Last update at: {DateTime.Now.ToShortTimeString()}";
 
             //TODO: update za ostalo...
+
+
+            if (root.weather.Count > 0)
+            {
+                if (root.weather[0].main.Equals("Clear"))
+                {
+                    ChangeBackgroundImage(sunnyBackgroundPath);
+                }
+                else if (root.weather[0].main.Equals("Clouds"))
+                {
+                    ChangeBackgroundImage(cloudyBackgroundPath);
+                }
+
+                else if (root.weather[0].main.Equals("Rain"))
+                {
+                    ChangeBackgroundImage(rainyBackgroundPath);
+                }
+
+                else if (root.weather[0].main.Equals("Snow"))
+                {
+                    ChangeBackgroundImage(snowyBackgroundPath);
+                }
+
+                else
+                {
+                    ChangeBackgroundImage("data/images/sunny.jpg");
+                }
+            }
+
         }
 
         private void SearchOption1_MouseEnter(object sender, MouseEventArgs e)
@@ -423,10 +461,10 @@ namespace WeatherForecastApp
         {
             searchTextBox.Text = SearchOption1_Text1.Text;
             
-            RootObject root = sendRequest(SearchOption1_Text1.Text);
+            root = sendRequest(SearchOption1_Text1.Text);
             if (root != null)
             {
-                updateBasicTemperatureData(root);
+                ChangeDisplayData();
             }
 
 
@@ -438,10 +476,10 @@ namespace WeatherForecastApp
         {
             searchTextBox.Text = SearchOption2_Text1.Text;
 
-            RootObject root = sendRequest(SearchOption2_Text1.Text);
+            root = sendRequest(SearchOption2_Text1.Text);
             if (root != null)
             {
-                updateBasicTemperatureData(root);
+                ChangeDisplayData();
             }
 
 
@@ -452,14 +490,69 @@ namespace WeatherForecastApp
         {
             searchTextBox.Text = SearchOption3_Text1.Text;
 
-            RootObject root = sendRequest(SearchOption3_Text1.Text);
+            root = sendRequest(SearchOption3_Text1.Text);
             if (root != null)
             {
-                updateBasicTemperatureData(root);
+                ChangeDisplayData();
             }
 
 
             SearchSelectionWindow.Visibility = Visibility.Hidden;
         }
+
+
+        private void ChangeDisplayData()
+        {
+
+            StartDataChangeAnimation();
+
+            
+            
+            
+        }
+
+        //Change background image
+        private void ChangeBackgroundImage(string imageSourcePath)
+        {
+            ApplicationBackgroundImage.ImageSource = new BitmapImage(new Uri(imageSourcePath, UriKind.Relative));   
+        }
+
+
+
+        //Changing DATA animation
+        private void StartDataChangeAnimation()
+        {
+            
+            
+            DoubleAnimation da = new DoubleAnimation
+            {
+                From = 1,
+                To = 0,
+                Duration = new Duration(TimeSpan.FromSeconds(0.35)),
+                AutoReverse = false
+            };
+            da.Completed += new EventHandler(backgroundFadeOutCompleted);
+
+            ApplicationBackground.BeginAnimation(OpacityProperty, da);
+        }
+
+        
+        private void backgroundFadeOutCompleted(object sender, EventArgs e)
+        {
+            updateBasicTemperatureData(root);   //Update data here, when fade out is finished
+
+
+            
+            DoubleAnimation da = new DoubleAnimation
+            {
+                From = 0,
+                To = 1,
+                Duration = new Duration(TimeSpan.FromSeconds(0.35)),
+                AutoReverse = false
+            };
+            ApplicationBackground.BeginAnimation(OpacityProperty, da);
+        }
+
+
     }
 }
