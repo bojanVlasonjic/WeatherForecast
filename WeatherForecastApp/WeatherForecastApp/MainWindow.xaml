@@ -15,6 +15,7 @@
         <Image x:Key="ReloadImage" RenderOptions.BitmapScalingMode="HighQuality" Source="Images/reload.png" />
         <Image x:Key="PinImage" RenderOptions.BitmapScalingMode="HighQuality" Source="Images/pin.png" />
         <Image x:Key="FavoritesImage" RenderOptions.BitmapScalingMode="HighQuality" Source="Images/favorites.png"/>
+        <Image x:Key="DeleteFavorites" RenderOptions.BitmapScalingMode="HighQuality" Source="Images/deleteCross.png" />
 
         <Style TargetType="{x:Type Button}">
             <Setter Property="Background" Value="#205770"/>
@@ -51,6 +52,49 @@
 
 
     <DockPanel  Background="#205770">
+
+        <Canvas Panel.ZIndex="99" x:Name="FavoritesCanvas" DockPanel.Dock="Left">
+            <StackPanel Width="350" x:Name="FavoritesHolder" Canvas.Left="-350" Background="#205770" Height="{Binding ActualHeight, ElementName=FavoritesCanvas}">
+                <Grid Height="50">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition></ColumnDefinition>
+                        <ColumnDefinition></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+
+
+                    <Button Content="Close" Foreground="White" FontSize="18" FontWeight="SemiBold" Click="CloseFavoritesBtn_Click"
+                            VerticalAlignment="Center" Height="40" Width="60" HorizontalAlignment="Right" ToolTip="Close favorites" Grid.Column="1" Margin="0,0,10,0"></Button>
+                    
+                </Grid>
+                <ScrollViewer VerticalScrollBarVisibility="Hidden">
+                    
+                    <StackPanel x:Name="FavoritesData">
+                        <Grid Height="50">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition Width="80"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Grid Grid.Column="0" UIElement.MouseEnter="FavoritesItem_MouseEnter" UIElement.MouseLeave="FavoritesItem_MouseLeave">
+                                <TextBlock Text="Dummy" Foreground="White" HorizontalAlignment="Left"
+                                           VerticalAlignment="Center" FontSize="16" FontWeight="SemiBold" Margin="15,0,0,0"/>
+                            </Grid>
+
+                            <Button Width="60" Height="40" Grid.Column="1" ToolTip="Delete" Content="{StaticResource DeleteFavorites}"/>
+
+
+                        </Grid>
+
+                        
+
+
+                    </StackPanel>
+                    
+                </ScrollViewer>
+            </StackPanel>
+            
+        </Canvas>
+        
 
         <Canvas Panel.ZIndex="99" DockPanel.Dock="Right" Visibility="Visible">
             <Grid x:Name="SearchSelectionWindow" Width="300" Height="200" Canvas.Top="50" Canvas.Right="5" Visibility="Hidden">
@@ -118,7 +162,7 @@
             <Button Width="0"></Button>
 
         </DockPanel>
-        <ScrollViewer DockPanel.Dock="Top" x:Name="ApplicationBackground" Opacity="1" HorizontalAlignment="Stretch" VerticalScrollBarVisibility="Auto">
+        <ScrollViewer DockPanel.Dock="Top" x:Name="ApplicationBackground" Opacity="1" HorizontalAlignment="Stretch" VerticalScrollBarVisibility="Hidden">
             
             <ScrollViewer.Background>
                 <ImageBrush x:Name="ApplicationBackgroundImage" ImageSource="Images/start_background.jpg" Stretch="UniformToFill" />

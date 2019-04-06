@@ -43,6 +43,9 @@ namespace WeatherForecastApp
         static OpenWeatherCities openWeatherCities;
         static RootObject root;
 
+        static bool isFavoritesShown = false;
+
+
         public MainWindow()
         {
             InitializeComponent();
@@ -565,7 +568,6 @@ namespace WeatherForecastApp
         {
             updateBasicTemperatureData(root);   //Update data here, when fade out is finished
 
-
             
             DoubleAnimation da = new DoubleAnimation
             {
@@ -577,10 +579,7 @@ namespace WeatherForecastApp
             ApplicationBackground.BeginAnimation(OpacityProperty, da);
         }
 
-        private void showFavouritesBtn_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
+        
 
         private void WeatherDayMouseEnter(object sender, MouseEventArgs e)
         {
@@ -595,6 +594,55 @@ namespace WeatherForecastApp
         {
             
 
+            Grid grid = (Grid)sender;
+            grid.Background = Brushes.Transparent;
+        }
+
+        private void showFavouritesBtn_Click(object sender, RoutedEventArgs e)
+        {
+
+            if (!isFavoritesShown)
+            {
+
+                DoubleAnimation da = new DoubleAnimation
+                {
+                    From = -FavoritesHolder.Width,
+                    To = 0,
+                    Duration = new Duration(TimeSpan.FromSeconds(0.3)),
+                    AutoReverse = false
+                };
+
+                FavoritesHolder.BeginAnimation(Canvas.LeftProperty, da);
+                isFavoritesShown = true;
+            }
+        }
+
+        private void CloseFavoritesBtn_Click(object sender, RoutedEventArgs e)
+        {
+            if (isFavoritesShown)
+            {
+
+                DoubleAnimation da = new DoubleAnimation
+                {
+                    From = 0,
+                    To = -FavoritesHolder.Width,
+                    Duration = new Duration(TimeSpan.FromSeconds(0.3)),
+                    AutoReverse = false
+                };
+
+                FavoritesHolder.BeginAnimation(Canvas.LeftProperty, da);
+                isFavoritesShown = false;
+            }
+        }
+
+        private void FavoritesItem_MouseEnter(object sender, MouseEventArgs e)
+        {
+            Grid grid = (Grid)sender;
+            grid.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#276582"));
+        }
+
+        private void FavoritesItem_MouseLeave(object sender, MouseEventArgs e)
+        {
             Grid grid = (Grid)sender;
             grid.Background = Brushes.Transparent;
         }
