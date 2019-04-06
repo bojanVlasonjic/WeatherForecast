@@ -8,11 +8,33 @@
         Loaded="loadWeatherByHours"
         SizeChanged="WindowSizeChanged"
         Title="Weather" MinHeight="600" Height="600" MinWidth="1024" Width="1024" WindowStartupLocation="CenterScreen">
-
-        <Window.Resources>
+    
+        
+    <Window.Resources>
         <SolidColorBrush x:Key="TransparentBackground" Color="#205770" Opacity="0.65" />
         <Image x:Key="ReloadImage" RenderOptions.BitmapScalingMode="HighQuality" Source="Images/reload.png" />
         <Image x:Key="PinImage" RenderOptions.BitmapScalingMode="HighQuality" Source="Images/pin.png" />
+        <Image x:Key="FavoritesImage" RenderOptions.BitmapScalingMode="HighQuality" Source="Images/favorites.png"/>
+
+        <Style TargetType="{x:Type Button}">
+            <Setter Property="Background" Value="#205770"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#2a657f"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
 
         <Style x:Key="CenterTextBlock" TargetType="TextBlock">
             <Setter Property="HorizontalAlignment" Value="Center" />
@@ -89,8 +111,9 @@
                      BorderThickness="0" Margin="0,0,5,0" Text="Search..." Padding="10,0,0,0" Width="300" Height="40"
                      VerticalAlignment="Stretch" FontSize="16" VerticalContentAlignment="Center" TextChanged="searchTextBox_TextChanged"></TextBox>
 
-            <Button x:Name="refreshBtn" DockPanel.Dock="Right" ToolTip="Refresh"  Width="60" Background="Transparent" Height="40" Margin="0,0,5,0" BorderThickness="0" Content="{StaticResource ReloadImage}" Click="refreshBtn_Click"/>
-            <Button x:Name="addToFavouritesBtn" DockPanel.Dock="Right" ToolTip="Add to favorites" Width="60" Background="Transparent" Height="40" Margin="0,0,5,0" BorderThickness="0" Content="{StaticResource PinImage}" Click="addToFavouritesBtn_Click"></Button>
+            <Button x:Name="refreshBtn" DockPanel.Dock="Right" ToolTip="Refresh"  Width="60" Height="40" Margin="0,0,5,0" BorderThickness="0" Content="{StaticResource ReloadImage}" Click="refreshBtn_Click"/>
+            <Button x:Name="addToFavouritesBtn" DockPanel.Dock="Right" ToolTip="Add to favorites" Width="60" Height="40" Margin="0,0,5,0" BorderThickness="0" Content="{StaticResource PinImage}" Click="addToFavouritesBtn_Click"></Button>
+            <Button x:Name="showFavouritesBtn" DockPanel.Dock="Right" ToolTip="Show favorites" Width="60" Height="40" Margin="0,0,5,0" BorderThickness="0" Content="{StaticResource FavoritesImage}" Click="showFavouritesBtn_Click"></Button>
             <TextBlock Style="{StaticResource WhiteText}" DockPanel.Dock="Left" VerticalAlignment="Center" FontWeight="DemiBold" Margin="10" Text="Weather Forecast" FontSize="16"></TextBlock>
             <Button Width="0"></Button>
 
@@ -126,7 +149,7 @@
                             <ColumnDefinition></ColumnDefinition>
                         </Grid.ColumnDefinitions>
 
-                        <Image x:Name="weatherIcon" Grid.Column="0" RenderOptions.BitmapScalingMode="HighQuality" Source="Images/pin.png"></Image>
+                        <Image x:Name="weatherIcon" Grid.Column="0" RenderOptions.BitmapScalingMode="HighQuality" Source="Images/sunnyIcon.png"></Image>
                         <TextBlock x:Name="temperatureTextBlock" Grid.Column="1" Grid.ColumnSpan="2" Text="20°C" FontSize="94"
                                    Style="{StaticResource WhiteText}" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="36,-18,10,0" Width="222"></TextBlock>
 
@@ -178,7 +201,7 @@
                         <ColumnDefinition></ColumnDefinition>
                     </Grid.ColumnDefinitions>
 
-                    <Grid Grid.Column="1">
+                    <Grid Grid.Column="1" UIElement.MouseEnter="WeatherDayMouseEnter" UIElement.MouseLeave="WeatherDayMouseLeave">
                         <Grid.RowDefinitions>
                             <RowDefinition></RowDefinition>
                             <RowDefinition></RowDefinition>
@@ -187,13 +210,13 @@
                         </Grid.RowDefinitions>
 
                         <TextBlock Grid.Row="0" FontSize="16" Foreground="white" FontWeight="SemiBold" Text="Monday" Style="{StaticResource CenterTextBlock}"></TextBlock>
-                        <Image Grid.Row="1" RenderOptions.BitmapScalingMode="HighQuality" Source="Images/pin.png"></Image>
+                        <Image Grid.Row="1" RenderOptions.BitmapScalingMode="HighQuality" Source="Images/cloudySunnyIcon.png"></Image>
                         <TextBlock Grid.Row="2" FontSize="22" FontWeight="SemiBold" Foreground="white" Text="23°C / 10°C" Style="{StaticResource CenterTextBlock}"></TextBlock>
                         <TextBlock Grid.Row="3" FontSize="16" Foreground="white" Text="Small description" Style="{StaticResource CenterTextBlock}"></TextBlock>
 
                     </Grid>
 
-                    <Grid Grid.Column="2">
+                    <Grid Grid.Column="2" UIElement.MouseEnter="WeatherDayMouseEnter" UIElement.MouseLeave="WeatherDayMouseLeave">
                         <Grid.RowDefinitions>
                             <RowDefinition></RowDefinition>
                             <RowDefinition></RowDefinition>
@@ -202,13 +225,13 @@
                         </Grid.RowDefinitions>
 
                         <TextBlock Grid.Row="0" FontSize="16" Foreground="white" FontWeight="SemiBold" Text="Tuesday" Style="{StaticResource CenterTextBlock}"></TextBlock>
-                        <Image Grid.Row="1" RenderOptions.BitmapScalingMode="HighQuality" Source="Images/pin.png"></Image>
+                        <Image Grid.Row="1" RenderOptions.BitmapScalingMode="HighQuality" Source="Images/cloudySunnyIcon.png"></Image>
                         <TextBlock Grid.Row="2" FontSize="22" FontWeight="SemiBold" Foreground="white" Text="18°C / 9°C" Style="{StaticResource CenterTextBlock}"></TextBlock>
                         <TextBlock Grid.Row="3" FontSize="16" Foreground="white" Text="Small description" Style="{StaticResource CenterTextBlock}"></TextBlock>
 
                     </Grid>
 
-                    <Grid Grid.Column="3">
+                    <Grid Grid.Column="3" UIElement.MouseEnter="WeatherDayMouseEnter" UIElement.MouseLeave="WeatherDayMouseLeave">
                         <Grid.RowDefinitions>
                             <RowDefinition></RowDefinition>
                             <RowDefinition></RowDefinition>
@@ -217,13 +240,13 @@
                         </Grid.RowDefinitions>
 
                         <TextBlock Grid.Row="0" FontSize="16" Foreground="white" FontWeight="SemiBold" Text="Wednesday" Style="{StaticResource CenterTextBlock}"></TextBlock>
-                        <Image Grid.Row="1" RenderOptions.BitmapScalingMode="HighQuality" Source="Images/pin.png"></Image>
+                        <Image Grid.Row="1" RenderOptions.BitmapScalingMode="HighQuality" Source="Images/cloudySunnyIcon.png"></Image>
                         <TextBlock Grid.Row="2" FontSize="22" FontWeight="SemiBold" Foreground="white" Text="18°C / 10°C" Style="{StaticResource CenterTextBlock}"></TextBlock>
                         <TextBlock Grid.Row="3" FontSize="16" Foreground="white" Text="Small description" Style="{StaticResource CenterTextBlock}"></TextBlock>
 
                     </Grid>
 
-                    <Grid Grid.Column="4">
+                    <Grid Grid.Column="4" UIElement.MouseEnter="WeatherDayMouseEnter" UIElement.MouseLeave="WeatherDayMouseLeave">
                         <Grid.RowDefinitions>
                             <RowDefinition></RowDefinition>
                             <RowDefinition></RowDefinition>
@@ -232,13 +255,13 @@
                         </Grid.RowDefinitions>
 
                         <TextBlock Grid.Row="0" FontSize="16" Foreground="white" FontWeight="SemiBold" Text="Thursday" Style="{StaticResource CenterTextBlock}"></TextBlock>
-                        <Image Grid.Row="1" RenderOptions.BitmapScalingMode="HighQuality" Source="Images/pin.png"></Image>
+                        <Image Grid.Row="1" RenderOptions.BitmapScalingMode="HighQuality" Source="Images/cloudySunnyIcon.png"></Image>
                         <TextBlock Grid.Row="2" FontSize="22" FontWeight="SemiBold" Foreground="white" Text="24°C / 11°C" Style="{StaticResource CenterTextBlock}"></TextBlock>
                         <TextBlock Grid.Row="3" FontSize="16" Foreground="white" Text="Small description" Style="{StaticResource CenterTextBlock}"></TextBlock>
 
                     </Grid>
 
-                    <Grid Grid.Column="5">
+                    <Grid Grid.Column="5" UIElement.MouseEnter="WeatherDayMouseEnter" UIElement.MouseLeave="WeatherDayMouseLeave">
                         <Grid.RowDefinitions>
                             <RowDefinition></RowDefinition>
                             <RowDefinition></RowDefinition>
@@ -247,7 +270,7 @@
                         </Grid.RowDefinitions>
 
                         <TextBlock Grid.Row="0" FontSize="16" Foreground="white" FontWeight="SemiBold" Text="Friday" Style="{StaticResource CenterTextBlock}"></TextBlock>
-                        <Image Grid.Row="1" RenderOptions.BitmapScalingMode="HighQuality" Source="Images/pin.png"></Image>
+                        <Image Grid.Row="1" RenderOptions.BitmapScalingMode="HighQuality" Source="Images/cloudySunnyIcon.png"></Image>
                         <TextBlock Grid.Row="2" FontSize="22" FontWeight="SemiBold" Foreground="white" Text="15°C / 5°C" Style="{StaticResource CenterTextBlock}"></TextBlock>
                         <TextBlock Grid.Row="3" FontSize="16" Foreground="white" Text="Small description" Style="{StaticResource CenterTextBlock}"></TextBlock>
 
@@ -259,9 +282,9 @@
 
                 <Grid Height="400" Margin="0,20,0,0">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition MaxWidth="300"></ColumnDefinition>
+                        <ColumnDefinition MaxWidth="370"></ColumnDefinition>
                         <ColumnDefinition MinWidth="850"></ColumnDefinition>
-                        <ColumnDefinition MaxWidth="300"></ColumnDefinition>
+                        <ColumnDefinition MaxWidth="370"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
 
                     <Grid.RowDefinitions>

@@ -145,6 +145,42 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\favorites.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\cloudyIcon.png" />
+    <Resource Include="Images\cloudySunnyIcon.png" />
+    <Resource Include="Images\rainyIcon.png" />
+    <Resource Include="Images\snowyIcon.png" />
+    <Resource Include="Images\sunnyIcon.png" />
+    <Resource Include="Images\thunderstormIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="data\icons\cloudyIcon.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="data\icons\cloudySunnyIcon.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="data\icons\rainyIcon.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="data\icons\snowyIcon.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="data\icons\sunnyIcon.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="data\icons\thunderstormIcon.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="data\images\foggy.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -28,6 +28,14 @@ namespace WeatherForecastApp
         const string cloudyBackgroundPath = "data/images/cloudy.jpg";
         const string snowyBackgroundPath = "data/images/snowy.jpg";
         const string rainyBackgroundPath = "data/images/rainy.jpg";
+        const string foggyBackgroundPath = "data/images/foggy.jpg";
+
+        const string sunnyIconPath = "data/icons/sunnyIcon.png";
+        const string cloudyIconPath = "data/icons/cloudyIcon.png";
+        const string snowyIconPath = "data/icons/snowyIcon.png";
+        const string rainyIconPath = "data/icons/rainyIcon.png";
+        const string cloudySunnyIconPath = "data/icons/cloudySunnyIcon.png";
+        const string thunderstormIconPath = "data/icons/thunderstormIcon.png";
 
 
         static HttpClient client = new HttpClient(); //used for multiple requests to server
@@ -395,21 +403,32 @@ namespace WeatherForecastApp
             {
                 if (root.weather[0].main.Equals("Clear"))
                 {
+                    
+                    ChangeIcon(weatherIcon, sunnyIconPath);
                     ChangeBackgroundImage(sunnyBackgroundPath);
                 }
                 else if (root.weather[0].main.Equals("Clouds"))
                 {
+                    ChangeIcon( weatherIcon, cloudySunnyIconPath);
                     ChangeBackgroundImage(cloudyBackgroundPath);
                 }
 
                 else if (root.weather[0].main.Equals("Rain"))
                 {
+                    ChangeIcon( weatherIcon, rainyIconPath);
                     ChangeBackgroundImage(rainyBackgroundPath);
                 }
 
                 else if (root.weather[0].main.Equals("Snow"))
                 {
+                    ChangeIcon( weatherIcon, snowyIconPath);
                     ChangeBackgroundImage(snowyBackgroundPath);
+                }
+
+                else if (root.weather[0].main.Equals("Haze"))
+                {
+                    ChangeIcon(weatherIcon, cloudyIconPath);
+                    ChangeBackgroundImage(foggyBackgroundPath);
                 }
 
                 else
@@ -505,10 +524,15 @@ namespace WeatherForecastApp
         {
 
             StartDataChangeAnimation();
+            
+            
+        }
 
-            
-            
-            
+
+        //Might cause troubles with invalid path
+        private void ChangeIcon(Image image, string imageSourcePath)
+        {
+            image.Source = (ImageSource) new ImageSourceConverter().ConvertFrom(imageSourcePath);
         }
 
         //Change background image
@@ -553,6 +577,26 @@ namespace WeatherForecastApp
             ApplicationBackground.BeginAnimation(OpacityProperty, da);
         }
 
+        private void showFavouritesBtn_Click(object sender, RoutedEventArgs e)
+        {
 
+        }
+
+        private void WeatherDayMouseEnter(object sender, MouseEventArgs e)
+        {
+
+            SolidColorBrush background =  (SolidColorBrush) this.FindResource("TransparentBackground");
+
+            Grid grid = (Grid)sender;
+            grid.Background = background;
+        }
+
+        private void WeatherDayMouseLeave(object sender, MouseEventArgs e)
+        {
+            
+
+            Grid grid = (Grid)sender;
+            grid.Background = Brushes.Transparent;
+        }
     }
 }
