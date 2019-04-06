@@ -8,8 +8,8 @@
         Loaded="loadWeatherByHours"
         SizeChanged="WindowSizeChanged"
         Title="Weather" MinHeight="600" Height="600" MinWidth="1024" Width="1024" WindowStartupLocation="CenterScreen">
-    
-        
+
+
     <Window.Resources>
         <SolidColorBrush x:Key="TransparentBackground" Color="#205770" Opacity="0.65" />
         <Image x:Key="ReloadImage" RenderOptions.BitmapScalingMode="HighQuality" Source="Images/reload.png" />
@@ -28,7 +28,7 @@
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
-            
+
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
                     <Setter Property="Background" Value="#2a657f"/>
@@ -147,26 +147,27 @@
 
             </Grid>
         </Canvas>
-        
-        
-        
+
+
+
         <DockPanel DockPanel.Dock="Top" Height="50" Background="#205770">
             <TextBox x:Name="searchTextBox" DockPanel.Dock="Right" Background="#2a657f" Foreground="White"
                      BorderThickness="0" Margin="0,0,5,0" Text="Search..." Padding="10,0,0,0" Width="300" Height="40"
                      VerticalAlignment="Stretch" FontSize="16" VerticalContentAlignment="Center" TextChanged="searchTextBox_TextChanged"></TextBox>
 
-            <Button x:Name="refreshBtn" DockPanel.Dock="Right" ToolTip="Refresh"  Width="60" Height="40" Margin="0,0,5,0" BorderThickness="0" Content="{StaticResource ReloadImage}" Click="refreshBtn_Click"/>
+            <Button x:Name="refreshBtn" DockPanel.Dock="Right" ToolTip="Refresh"  Width="60" Height="40" Margin="0,0,5,5" BorderThickness="0" Content="{StaticResource ReloadImage}" Click="refreshBtn_Click" VerticalAlignment="Bottom"/>
             <Button x:Name="addToFavouritesBtn" DockPanel.Dock="Right" ToolTip="Add to favorites" Width="60" Height="40" Margin="0,0,5,0" BorderThickness="0" Content="{StaticResource PinImage}" Click="addToFavouritesBtn_Click"></Button>
             <Button x:Name="showFavouritesBtn" DockPanel.Dock="Right" ToolTip="Show favorites" Width="60" Height="40" Margin="0,0,5,0" BorderThickness="0" Content="{StaticResource FavoritesImage}" Click="showFavouritesBtn_Click"></Button>
             <TextBlock Style="{StaticResource WhiteText}" DockPanel.Dock="Left" VerticalAlignment="Center" FontWeight="DemiBold" Margin="10" Text="Weather Forecast" FontSize="16"></TextBlock>
             <Button Width="0"></Button>
 
         </DockPanel>
+
         <ScrollViewer DockPanel.Dock="Top" x:Name="ApplicationBackground" Opacity="1" HorizontalAlignment="Stretch" VerticalScrollBarVisibility="Hidden">
-            
+
             <ScrollViewer.Background>
                 <ImageBrush x:Name="ApplicationBackgroundImage" ImageSource="Images/start_background.jpg" Stretch="UniformToFill" />
-                
+
             </ScrollViewer.Background>
 
             <StackPanel Background="{StaticResource TransparentBackground}">
@@ -253,10 +254,10 @@
                             <RowDefinition></RowDefinition>
                         </Grid.RowDefinitions>
 
-                        <TextBlock Grid.Row="0" FontSize="16" Foreground="white" FontWeight="SemiBold" Text="Monday" Style="{StaticResource CenterTextBlock}"></TextBlock>
-                        <Image Grid.Row="1" RenderOptions.BitmapScalingMode="HighQuality" Source="Images/cloudySunnyIcon.png"></Image>
-                        <TextBlock Grid.Row="2" FontSize="22" FontWeight="SemiBold" Foreground="white" Text="23°C / 10°C" Style="{StaticResource CenterTextBlock}"></TextBlock>
-                        <TextBlock Grid.Row="3" FontSize="16" Foreground="white" Text="Small description" Style="{StaticResource CenterTextBlock}"></TextBlock>
+                        <TextBlock x:Name="day1TextBlock" Grid.Row="0" FontSize="16" Foreground="white" FontWeight="SemiBold" Text="Monday" Style="{StaticResource CenterTextBlock}"></TextBlock>
+                        <Image x:Name="day1WeatherIcon" Grid.Row="1" RenderOptions.BitmapScalingMode="HighQuality" Source="Images/cloudySunnyIcon.png"></Image>
+                        <TextBlock x:Name="day1TempTextBlock" Grid.Row="2" FontSize="22" FontWeight="SemiBold" Foreground="white" Text="23°C / 10°C" Style="{StaticResource CenterTextBlock}"></TextBlock>
+                        <TextBlock x:Name="smallDescr1TextBlock" Grid.Row="3" FontSize="16" Foreground="white" Text="Small description" Style="{StaticResource CenterTextBlock}"></TextBlock>
 
                     </Grid>
 
@@ -268,10 +269,10 @@
                             <RowDefinition></RowDefinition>
                         </Grid.RowDefinitions>
 
-                        <TextBlock Grid.Row="0" FontSize="16" Foreground="white" FontWeight="SemiBold" Text="Tuesday" Style="{StaticResource CenterTextBlock}"></TextBlock>
-                        <Image Grid.Row="1" RenderOptions.BitmapScalingMode="HighQuality" Source="Images/cloudySunnyIcon.png"></Image>
-                        <TextBlock Grid.Row="2" FontSize="22" FontWeight="SemiBold" Foreground="white" Text="18°C / 9°C" Style="{StaticResource CenterTextBlock}"></TextBlock>
-                        <TextBlock Grid.Row="3" FontSize="16" Foreground="white" Text="Small description" Style="{StaticResource CenterTextBlock}"></TextBlock>
+                        <TextBlock x:Name="day2TextBlock" Grid.Row="0" FontSize="16" Foreground="white" FontWeight="SemiBold" Text="Tuesday" Style="{StaticResource CenterTextBlock}"></TextBlock>
+                        <Image x:Name="day2WeatherIcon" Grid.Row="1" RenderOptions.BitmapScalingMode="HighQuality" Source="Images/cloudySunnyIcon.png"></Image>
+                        <TextBlock x:Name="day2TempTextBlock" Grid.Row="2" FontSize="22" FontWeight="SemiBold" Foreground="white" Text="18°C / 9°C" Style="{StaticResource CenterTextBlock}"></TextBlock>
+                        <TextBlock x:Name="smallDescr2TextBlock" Grid.Row="3" FontSize="16" Foreground="white" Text="Small description" Style="{StaticResource CenterTextBlock}"></TextBlock>
 
                     </Grid>
 
@@ -283,10 +284,10 @@
                             <RowDefinition></RowDefinition>
                         </Grid.RowDefinitions>
 
-                        <TextBlock Grid.Row="0" FontSize="16" Foreground="white" FontWeight="SemiBold" Text="Wednesday" Style="{StaticResource CenterTextBlock}"></TextBlock>
-                        <Image Grid.Row="1" RenderOptions.BitmapScalingMode="HighQuality" Source="Images/cloudySunnyIcon.png"></Image>
-                        <TextBlock Grid.Row="2" FontSize="22" FontWeight="SemiBold" Foreground="white" Text="18°C / 10°C" Style="{StaticResource CenterTextBlock}"></TextBlock>
-                        <TextBlock Grid.Row="3" FontSize="16" Foreground="white" Text="Small description" Style="{StaticResource CenterTextBlock}"></TextBlock>
+                        <TextBlock x:Name="day3TextBlock" Grid.Row="0" FontSize="16" Foreground="white" FontWeight="SemiBold" Text="Wednesday" Style="{StaticResource CenterTextBlock}"></TextBlock>
+                        <Image x:Name="day3WeatherIcon" Grid.Row="1" RenderOptions.BitmapScalingMode="HighQuality" Source="Images/cloudySunnyIcon.png"></Image>
+                        <TextBlock x:Name="day3TempTextBlock" Grid.Row="2" FontSize="22" FontWeight="SemiBold" Foreground="white" Text="18°C / 10°C" Style="{StaticResource CenterTextBlock}"></TextBlock>
+                        <TextBlock x:Name="smallDescr3TextBlock" Grid.Row="3" FontSize="16" Foreground="white" Text="Small description" Style="{StaticResource CenterTextBlock}"></TextBlock>
 
                     </Grid>
 
@@ -298,10 +299,10 @@
                             <RowDefinition></RowDefinition>
                         </Grid.RowDefinitions>
 
-                        <TextBlock Grid.Row="0" FontSize="16" Foreground="white" FontWeight="SemiBold" Text="Thursday" Style="{StaticResource CenterTextBlock}"></TextBlock>
-                        <Image Grid.Row="1" RenderOptions.BitmapScalingMode="HighQuality" Source="Images/cloudySunnyIcon.png"></Image>
-                        <TextBlock Grid.Row="2" FontSize="22" FontWeight="SemiBold" Foreground="white" Text="24°C / 11°C" Style="{StaticResource CenterTextBlock}"></TextBlock>
-                        <TextBlock Grid.Row="3" FontSize="16" Foreground="white" Text="Small description" Style="{StaticResource CenterTextBlock}"></TextBlock>
+                        <TextBlock x:Name="day4TextBlock" Grid.Row="0" FontSize="16" Foreground="white" FontWeight="SemiBold" Text="Thursday" Style="{StaticResource CenterTextBlock}"></TextBlock>
+                        <Image x:Name="day4WeatherIcon" Grid.Row="1" RenderOptions.BitmapScalingMode="HighQuality" Source="Images/cloudySunnyIcon.png"></Image>
+                        <TextBlock x:Name="day4TempTextBlock" Grid.Row="2" FontSize="22" FontWeight="SemiBold" Foreground="white" Text="24°C / 11°C" Style="{StaticResource CenterTextBlock}"></TextBlock>
+                        <TextBlock x:Name="smallDescr4TextBlock" Grid.Row="3" FontSize="16" Foreground="white" Text="Small description" Style="{StaticResource CenterTextBlock}"></TextBlock>
 
                     </Grid>
 
@@ -310,13 +311,13 @@
                             <RowDefinition></RowDefinition>
                             <RowDefinition></RowDefinition>
                             <RowDefinition></RowDefinition>
-                            <RowDefinition></RowDefinition>
+                            <RowDefinition Height="51"></RowDefinition>
                         </Grid.RowDefinitions>
 
-                        <TextBlock Grid.Row="0" FontSize="16" Foreground="white" FontWeight="SemiBold" Text="Friday" Style="{StaticResource CenterTextBlock}"></TextBlock>
-                        <Image Grid.Row="1" RenderOptions.BitmapScalingMode="HighQuality" Source="Images/cloudySunnyIcon.png"></Image>
-                        <TextBlock Grid.Row="2" FontSize="22" FontWeight="SemiBold" Foreground="white" Text="15°C / 5°C" Style="{StaticResource CenterTextBlock}"></TextBlock>
-                        <TextBlock Grid.Row="3" FontSize="16" Foreground="white" Text="Small description" Style="{StaticResource CenterTextBlock}"></TextBlock>
+                        <TextBlock x:Name="day5TextBlock" Grid.Row="0" FontSize="16" Foreground="white" FontWeight="SemiBold" Text="Friday" Style="{StaticResource CenterTextBlock}"></TextBlock>
+                        <Image x:Name="day5WeatherIcon" Grid.Row="1" RenderOptions.BitmapScalingMode="HighQuality" Source="Images/cloudySunnyIcon.png"></Image>
+                        <TextBlock x:Name="day5TempTextBlock" Grid.Row="2" FontSize="22" FontWeight="SemiBold" Foreground="white" Text="15°C / 5°C" Style="{StaticResource CenterTextBlock}"></TextBlock>
+                        <TextBlock x:Name="smallDescr5TextBlock" Grid.Row="3" FontSize="16" Foreground="white" Text="Small description" Style="{StaticResource CenterTextBlock}"></TextBlock>
 
                     </Grid>
 
@@ -339,7 +340,7 @@
                     </Grid.RowDefinitions>
 
                     <Canvas x:Name="WeatherByHoursCanvas" Grid.Column="1" Grid.Row="2">
-                        
+
                         <TextBlock x:Name="WeatherHour1" Text="00:00" Canvas.Bottom="-25" FontSize="16" Foreground="White"/>
                         <TextBlock x:Name="WeatherHour2" Text="06:00" Canvas.Bottom="-25" FontSize="16" Foreground="White"/>
                         <TextBlock x:Name="WeatherHour3" Text="12:00" Canvas.Bottom="-25" FontSize="16" Foreground="White"/>
@@ -356,7 +357,7 @@
                     <TextBlock Text="Currently showing data for day: Monday" Grid.Column="1" Grid.Row="1" Foreground="White" FontSize="14" VerticalAlignment="Center"/>
 
                 </Grid>
-                
+
             </StackPanel>
         </ScrollViewer>
 
