@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Formatting;
+using Newtonsoft.Json;
 
 namespace WeatherForecastApp
 {
@@ -13,10 +14,21 @@ namespace WeatherForecastApp
     {
         // when sending a request -> url + ?q= + cityName + api_key
 
-        private const string URL = "https://api.openweathermap.org/data/2.5/weather"; //base address
+        private const string URL_forecast = "https://api.openweathermap.org/data/2.5/forecast"; //base address
+        private const string URL_hourly = "https://api.openweathermap.org/data/2.5/forecast/hourly";
         private const string API_KEY = "&appid=7e2ee9421fe5a28a316416a3b37483ef";
 
         public string CityName{ get; set; }
+
+        public string URL_Forecast
+        {
+            get { return URL_forecast; }
+        }
+
+        public string URL_Hourly
+        {
+            get { return URL_hourly; }
+        }
 
         public RestRequest()
         {
@@ -25,7 +37,7 @@ namespace WeatherForecastApp
 
 
         //send request method
-        public RestResponse sendRequestToOpenWeather(HttpClient client)
+        public RestResponse sendRequestToOpenWeather(HttpClient client, string URL)
         {
 
             RestResponse restResponse = new RestResponse();
@@ -64,8 +76,17 @@ namespace WeatherForecastApp
             if (response.IsSuccessStatusCode)
             {
                 // Parse the response body.
-                RootObject parsedData = response.Content.ReadAsAsync<RootObject>().Result;
-                //var data = response.Content.ReadAsStringAsync();
+                RootObject parsedData = null;
+                try
+                {
+                    parsedData = response.Content.ReadAsAsync<RootObject>().Result; //parsing json into RootObject
+
+                } catch(Exception)
+                {
+                    restResponse.Message = "Something went wrong. Please try again";
+                    return restResponse;
+                }
+                
                 restResponse.Message = "Success";
                 restResponse.Root = parsedData;
             }

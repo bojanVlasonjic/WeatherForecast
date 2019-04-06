@@ -341,7 +341,7 @@ namespace WeatherForecastApp
         private void refreshBtn_Click(object sender, RoutedEventArgs e)
         {
             //za sad po default-u dobavi podatke za novi sad
-            root = sendRequest("Novi Sad");
+            root = sendRequestForecast("Novi Sad");
 
             //refresh the displayed data
             if(root != null)
@@ -352,17 +352,25 @@ namespace WeatherForecastApp
         }
 
 
-        /* Method used for sending a request to server */
-        public RootObject sendRequest(string cityName)
+        /* Method used for sending a forecast request to server.
+         * Returns the forecast for the next week for every 3 hours */
+        public RootObject sendRequestForecast(string cityName)
         {
 
             rest_request.CityName = cityName;
 
-            RestResponse response = rest_request.sendRequestToOpenWeather(client); //get response from server
+            RestResponse response = rest_request.sendRequestToOpenWeather(client, rest_request.URL_Forecast); //get response from server
 
             if (response.Root == null)
             {
                 MessageBox.Show(response.Message); //something wen't wrong in the response
+                return null;
+            }
+
+            //if the json parsed, but some of the importan't data is null
+            if(response.Root.city == null || response.Root.list == null)
+            {
+                MessageBox.Show("Something went wrong. Please try again in a couple of minutes");
                 return null;
             }
 
@@ -385,62 +393,68 @@ namespace WeatherForecastApp
 
         public void updateBasicTemperatureData(RootObject root)
         {
-            cityNameTextBlock.Text = $"{root.name}, {root.sys.country}";
-            temperatureTextBlock.Text = $"{convertKelvinToCelsius(root.main.temp)}°C";
-
-            //TODO: change icon if necessary
+            /* Update current data */
+            cityNameTextBlock.Text = $"{root.city.name}, {root.city.country}";
+            temperatureTextBlock.Text = $"{convertKelvinToCelsius(root.list[0].main.temp)}°C";
             
-            humidityTextBlock.Text = $"Humidity: {root.main.humidity}%";
-            visibilityTextBlock.Text = $"Visibility: {convertMetersToKilometers(root.visibility)} km";
-            pressureTextBlock.Text = $"Pressure: {root.main.pressure} mbar";
-            minTempTextBlock.Text = $"Minimum: {convertKelvinToCelsius(root.main.temp_min)}°C";
-            maxTempTextBlock.Text = $"Maximum: {convertKelvinToCelsius(root.main.temp_max)}°C";
-            windSpeedTextBlock.Text = $"Wind speed: {root.wind.speed} m/s";
+            humidityTextBlock.Text = $"Humidity: {root.list[0].main.humidity}%";
+            windSpeedTextBlock.Text = $"Wind speed: {root.list[0].wind.speed} m/s";
+
+            //visibilityTextBlock.Text = $"Visibility: {convertMetersToKilometers(root.visibility)} km";
+            pressureTextBlock.Text = $"Pressure: {root.list[0].main.pressure} mbar";
+
+            minTempTextBlock.Text = $"Minimum: {convertKelvinToCelsius(root.list[0].main.temp_min)}°C";
+            maxTempTextBlock.Text = $"Maximum: {convertKelvinToCelsius(root.list[0].main.temp_max)}°C";
 
             updateTimeTextBlock.Text = $"Last update at: {DateTime.Now.ToShortTimeString()}";
 
             //TODO: update za ostalo...
 
-
-            if (root.weather.Count > 0)
+            if (root.list[0].weather.Count > 0)
             {
-                if (root.weather[0].main.Equals("Clear"))
-                {
+                smallDescrTextBlock.Text = root.list[0].weather[0].description;
+                changeIconAndBackground();
                     
-                    ChangeIcon(weatherIcon, sunnyIconPath);
-                    ChangeBackgroundImage(sunnyBackgroundPath);
-                }
-                else if (root.weather[0].main.Equals("Clouds"))
-                {
-                    ChangeIcon( weatherIcon, cloudySunnyIconPath);
-                    ChangeBackgroundImage(cloudyBackgroundPath);
-                }
-
-                else if (root.weather[0].main.Equals("Rain"))
-                {
-                    ChangeIcon( weatherIcon, rainyIconPath);
-                    ChangeBackgroundImage(rainyBackgroundPath);
-                }
-
-                else if (root.weather[0].main.Equals("Snow"))
-                {
-                    ChangeIcon( weatherIcon, snowyIconPath);
-                    ChangeBackgroundImage(snowyBackgroundPath);
-                }
-
-                else if (root.weather[0].main.Equals("Haze"))
-                {
-                    ChangeIcon(weatherIcon, cloudyIconPath);
-                    ChangeBackgroundImage(foggyBackgroundPath);
-                }
-
-                else
-                {
-                    ChangeBackgroundImage("data/images/sunny.jpg");
-                }
-            }
+            } 
 
         }
+
+        private void changeIconAndBackground()
+        {
+
+            switch(root.list[0].weather[0].main.ToLower())
+            {
+                case "clear":
+                    ChangeIcon(weatherIcon, sunnyIconPath);
+                    ChangeBackgroundImage(sunnyBackgroundPath);
+                    return;
+
+                case "clouds":
+                    ChangeIcon(weatherIcon, cloudySunnyIconPath);
+                    ChangeBackgroundImage(cloudyBackgroundPath);
+                    return;
+
+                case "rain":
+                    ChangeIcon(weatherIcon, rainyIconPath);
+                    ChangeBackgroundImage(rainyBackgroundPath);
+                    return;
+
+                case "snow":
+                    ChangeIcon(weatherIcon, snowyIconPath);
+                    ChangeBackgroundImage(snowyBackgroundPath);
+                    return;
+
+                case "haze":
+                    ChangeIcon(weatherIcon, cloudyIconPath);
+                    ChangeBackgroundImage(foggyBackgroundPath);
+                    return;
+
+                default:
+                    ChangeBackgroundImage("data/images/sunny.jpg");
+                    return;
+            }
+        }
+
 
         private void SearchOption1_MouseEnter(object sender, MouseEventArgs e)
         {
@@ -483,7 +497,7 @@ namespace WeatherForecastApp
         {
             searchTextBox.Text = SearchOption1_Text1.Text;
             
-            root = sendRequest(SearchOption1_Text1.Text);
+            root = sendRequestForecast(SearchOption1_Text1.Text);
             if (root != null)
             {
                 ChangeDisplayData();
@@ -498,7 +512,7 @@ namespace WeatherForecastApp
         {
             searchTextBox.Text = SearchOption2_Text1.Text;
 
-            root = sendRequest(SearchOption2_Text1.Text);
+            root = sendRequestForecast(SearchOption2_Text1.Text);
             if (root != null)
             {
                 ChangeDisplayData();
@@ -512,7 +526,7 @@ namespace WeatherForecastApp
         {
             searchTextBox.Text = SearchOption3_Text1.Text;
 
-            root = sendRequest(SearchOption3_Text1.Text);
+            root = sendRequestForecast(SearchOption3_Text1.Text);
             if (root != null)
             {
                 ChangeDisplayData();
