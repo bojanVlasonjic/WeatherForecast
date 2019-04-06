@@ -397,61 +397,196 @@ namespace WeatherForecastApp
             humidityTextBlock.Text = $"Humidity: {root.list[0].main.humidity}%";
             windSpeedTextBlock.Text = $"Wind speed: {root.list[0].wind.speed} m/s";
 
-            //visibilityTextBlock.Text = $"Visibility: {convertMetersToKilometers(root.visibility)} km";
             pressureTextBlock.Text = $"Pressure: {root.list[0].main.pressure} mbar";
 
-            minTempTextBlock.Text = $"Minimum: {convertKelvinToCelsius(root.list[0].main.temp_min)}°C";
-            maxTempTextBlock.Text = $"Maximum: {convertKelvinToCelsius(root.list[0].main.temp_max)}°C";
+            updateMinAndMaxTemp(); 
 
             updateTimeTextBlock.Text = $"Last update at: {DateTime.Now.ToShortTimeString()}";
-
-            //TODO: update za ostalo...
 
             if (root.list[0].weather.Count > 0)
             {
                 smallDescrTextBlock.Text = root.list[0].weather[0].description;
-                changeIconAndBackground();
+                changeIconAndBackground(true, weatherIcon, root.list[0].weather[0].main);
                     
             } 
 
         }
 
-        private void changeIconAndBackground()
+        public void updateMinAndMaxTemp()
+        {
+            DateTime latest_temp = Convert.ToDateTime(root.list[0].dt_txt);
+            double minTemp = 100000;
+            double maxTemp = -100000;
+
+            const int endIndex = 8;
+            //iterate over the next 24 hours (3 hours * 8 = 24 hours)
+            for(int i = 0; i < endIndex; i++)
+            {
+                //update max temp
+                double currTemp = convertKelvinToCelsius(root.list[i].main.temp);
+
+                if(currTemp > maxTemp)
+                {
+                    maxTemp = convertKelvinToCelsius(root.list[i].main.temp);
+                }
+
+                //update min temp
+                if (currTemp < minTemp)
+                {
+                    minTemp = convertKelvinToCelsius(root.list[i].main.temp);
+                }
+
+            }
+
+            //change gui components
+            minTempTextBlock.Text = $"Minimum: {minTemp}°C";
+            maxTempTextBlock.Text = $"Maximum: {maxTemp}°C";
+
+        }
+
+
+        public void updateDailyTemperatureData()
         {
 
-            switch(root.list[0].weather[0].main.ToLower())
+            DateTime today = DateTime.Now;
+            int counter = 0; //day counter
+
+            DateTime followingDay = today.AddDays(counter);
+
+            string weatherType = ""; //rainy, cloudy, ... used for icons
+            string smallDescr = ""; //light rain - used for description
+
+            double minTemp = 100000;
+            double maxTemp = -100000;
+
+            const int endIndex = 40;
+
+            //update the temperature for the following 5 days, measuring min and max temp over 24 hours from now
+            // 3 hours * 8 intervals = 24 hours; 8 intervals * 5 days = 40
+            for (int i = 0; i < endIndex; i++)
             {
+                //24 hours passed, reseting temperatures
+                if(i%8 == 0 && i != 0)
+                {
+                    updateDailyValues(counter, minTemp, maxTemp, followingDay, weatherType, smallDescr);
+
+                    minTemp = 100000;
+                    maxTemp = -100000;
+
+                    counter++;
+                    followingDay = today.AddDays(counter);
+                }
+
+                //collect weather description after 12 hours 
+                if(i%4 == 0)
+                {
+                    weatherType = root.list[i].weather[0].main;
+                    smallDescr = root.list[i].weather[0].description;
+                }
+
+                double currTemp = convertKelvinToCelsius(root.list[i].main.temp);
+
+                //update max temp
+                if (currTemp > maxTemp)
+                {
+                    maxTemp = convertKelvinToCelsius(root.list[i].main.temp);
+                }
+
+                //update min temp
+                if (currTemp < minTemp)
+                {
+                    minTemp = convertKelvinToCelsius(root.list[i].main.temp);
+                }
+
+                //update one last time at the end
+                if(i == endIndex - 1) {
+                    updateDailyValues(counter, minTemp, maxTemp, followingDay, weatherType, smallDescr);
+                }
+            }
+        }
+
+        private void updateDailyValues(int counter, double minTemp, double maxTemp, DateTime day, string weatherType, string descr)
+        {
+            switch(counter)
+            {
+                case 0:
+                    day1TextBlock.Text = day.DayOfWeek.ToString();
+                    day1TempTextBlock.Text = $"{maxTemp} / {minTemp}°C";
+                    changeIconAndBackground(false, day1WeatherIcon, weatherType);
+                    smallDescr1TextBlock.Text = descr; //update small description
+                    break;
+
+                case 1:
+                    day2TextBlock.Text = day.DayOfWeek.ToString();
+                    day2TempTextBlock.Text = $"{maxTemp} / {minTemp}°C";
+                    changeIconAndBackground(false, day2WeatherIcon, weatherType);
+                    smallDescr2TextBlock.Text = descr; //update small description
+                    break;
+
+                case 2:
+                    day3TextBlock.Text = day.DayOfWeek.ToString();
+                    day3TempTextBlock.Text = $"{maxTemp} / {minTemp}°C";
+                    changeIconAndBackground(false, day3WeatherIcon, weatherType);
+                    smallDescr3TextBlock.Text = descr; //update small description
+                    break;
+
+                case 3:
+                    day4TextBlock.Text = day.DayOfWeek.ToString();
+                    day4TempTextBlock.Text = $"{maxTemp} / {minTemp}°C";
+                    changeIconAndBackground(false, day4WeatherIcon, weatherType);
+                    smallDescr4TextBlock.Text = descr; //update small description
+                    break;
+
+                case 4:
+                    day5TextBlock.Text = day.DayOfWeek.ToString();
+                    day5TempTextBlock.Text = $"{maxTemp} / {minTemp}°C";
+                    changeIconAndBackground(false, day5WeatherIcon, weatherType);
+                    smallDescr5TextBlock.Text = descr; //update small description
+                    break;
+
+            }
+        }
+
+        private void changeIconAndBackground(bool updateBackground, Image iconImage, string weatherDescr)
+        {
+            
+             switch (weatherDescr.ToLower())
+             {
                 case "clear":
-                    ChangeIcon(weatherIcon, sunnyIconPath);
-                    ChangeBackgroundImage(sunnyBackgroundPath);
+                    updateIconsAndBackground(updateBackground, iconImage, sunnyIconPath, sunnyBackgroundPath);
                     return;
 
                 case "clouds":
-                    ChangeIcon(weatherIcon, cloudySunnyIconPath);
-                    ChangeBackgroundImage(cloudyBackgroundPath);
+                    updateIconsAndBackground(updateBackground, iconImage, cloudySunnyIconPath, cloudyBackgroundPath);
                     return;
 
                 case "rain":
-                    ChangeIcon(weatherIcon, rainyIconPath);
-                    ChangeBackgroundImage(rainyBackgroundPath);
+                    updateIconsAndBackground(updateBackground, iconImage, rainyIconPath, rainyBackgroundPath);
                     return;
 
                 case "snow":
-                    ChangeIcon(weatherIcon, snowyIconPath);
-                    ChangeBackgroundImage(snowyBackgroundPath);
+                    updateIconsAndBackground(updateBackground, iconImage, snowyIconPath, snowyBackgroundPath);
                     return;
 
                 case "haze":
-                    ChangeIcon(weatherIcon, cloudyIconPath);
-                    ChangeBackgroundImage(foggyBackgroundPath);
+                    updateIconsAndBackground(updateBackground, iconImage, cloudyIconPath, foggyBackgroundPath);
                     return;
 
                 default:
-                    ChangeBackgroundImage("data/images/sunny.jpg");
                     return;
             }
         }
 
+
+        private void updateIconsAndBackground(bool updateBackground, Image iconImage, string iconPath, string backgroundPath)
+        {
+            ChangeIcon(iconImage, iconPath);
+
+            if(updateBackground)
+            {
+                ChangeBackgroundImage(backgroundPath);
+            }
+        }
 
         private void SearchOption1_MouseEnter(object sender, MouseEventArgs e)
         {
@@ -578,7 +713,7 @@ namespace WeatherForecastApp
         private void backgroundFadeOutCompleted(object sender, EventArgs e)
         {
             updateBasicTemperatureData(root);   //Update data here, when fade out is finished
-
+            updateDailyTemperatureData();
 
             
             DoubleAnimation da = new DoubleAnimation
