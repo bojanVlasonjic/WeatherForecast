@@ -30,12 +30,14 @@ namespace WeatherForecastApp
         const string rainyBackgroundPath = "data/images/rainy.jpg";
         const string foggyBackgroundPath = "data/images/foggy.jpg";
 
+        const string deleteFavoritesIconPath = "data/icons/deleteCross.png";
         const string sunnyIconPath = "data/icons/sunnyIcon.png";
         const string cloudyIconPath = "data/icons/cloudyIcon.png";
         const string snowyIconPath = "data/icons/snowyIcon.png";
         const string rainyIconPath = "data/icons/rainyIcon.png";
         const string cloudySunnyIconPath = "data/icons/cloudySunnyIcon.png";
         const string thunderstormIconPath = "data/icons/thunderstormIcon.png";
+
 
 
         static HttpClient client = new HttpClient(); //used for multiple requests to server
@@ -312,7 +314,7 @@ namespace WeatherForecastApp
         private void loadWeatherByHours(object sender, EventArgs e)                                     //Method called on window load
         {
             openWeatherCities = new OpenWeatherCities(); //WARNING! Loading huge data (cities)
-            ReloadWeatherByHours(new int[] { 5, 7, 10, 15, 16, 20, 18, 14, 11, 8 ,2});
+            ReloadWeatherByHours(new int[] { 5, 7, 10, 15, 16, 20, 18, 14, 11, 8});
             
 
 
@@ -320,7 +322,7 @@ namespace WeatherForecastApp
 
         private void WindowSizeChanged(object sender, EventArgs e)
         {
-            ReloadWeatherByHours(new int[] { 5, 7, 10, 15, 16, 20, 18, 14, 11, 8, 2 });
+            ReloadWeatherByHours(new int[] { 5, 7, 10, 15, 16, 20, 18, 14, 11, 8, 2, 20, 18, 14, 11, 8, 2 });
         }
 
 
@@ -335,7 +337,60 @@ namespace WeatherForecastApp
         /* Button events */
         private void addToFavouritesBtn_Click(object sender, RoutedEventArgs e)
         {
-            
+
+            AddItemToFavorites(root.city.name);
+
+
+        }
+
+        private void AddItemToFavorites(string cityName)
+        {
+
+            Grid mainGrid = new Grid();
+            mainGrid.Height = 50;
+            mainGrid.ColumnDefinitions.Add(new ColumnDefinition());
+            var colDefinition = new ColumnDefinition();
+            colDefinition.Width = new GridLength(80);
+            mainGrid.ColumnDefinitions.Add(colDefinition);
+
+            Grid textGrid = new Grid();
+            textGrid.SetValue(Grid.ColumnProperty, 0);
+            textGrid.MouseEnter += FavoritesItem_MouseEnter;
+            textGrid.MouseLeave += FavoritesItem_MouseLeave;
+            textGrid.MouseDown += FavoritesItem_MouseDown;
+
+            TextBlock data = new TextBlock();
+            data.Text = cityName;
+            data.Foreground = Brushes.White;
+            data.HorizontalAlignment = HorizontalAlignment.Left;
+            data.VerticalAlignment = VerticalAlignment.Center;
+            data.FontSize = 16;
+            data.FontWeight = FontWeights.SemiBold;
+            data.Margin = new Thickness(15, 0, 0, 0);
+
+            textGrid.Children.Add(data);
+
+            Button deleteBtn = new Button();
+            deleteBtn.Width = 60;
+            deleteBtn.Height = 40;
+            deleteBtn.SetValue(Grid.ColumnProperty, 1);
+            deleteBtn.ToolTip = "Delete";
+
+            Image img = new Image();
+            img.Source = (ImageSource)new ImageSourceConverter().ConvertFrom(deleteFavoritesIconPath);
+            img.SetValue(RenderOptions.BitmapScalingModeProperty, BitmapScalingMode.HighQuality);
+
+            deleteBtn.Content = img;
+            deleteBtn.Click += DeleteFavoriteItem;
+
+
+            mainGrid.Children.Add(textGrid);
+            mainGrid.Children.Add(deleteBtn);
+
+
+            FavoritesData.Children.Add(mainGrid);
+
+
         }
 
         private void refreshBtn_Click(object sender, RoutedEventArgs e)
@@ -660,5 +715,28 @@ namespace WeatherForecastApp
             Grid grid = (Grid)sender;
             grid.Background = Brushes.Transparent;
         }
+
+        private void FavoritesItem_MouseDown(object sender, MouseEventArgs e)
+        {
+
+            Grid grid = (Grid)sender;
+            TextBlock textBlock = grid.Children[0] as TextBlock;
+
+            root = sendRequestForecast(textBlock.Text);
+            ChangeDisplayData();
+        }
+
+        private void DeleteFavoriteItem(object sender, RoutedEventArgs e)
+        {
+            Button btn = (Button)sender;
+            Grid grid = (Grid)btn.Parent;
+
+            Grid child1 = grid.Children[0] as Grid;
+            TextBlock textChild = child1.Children[0] as TextBlock;
+
+            FavoritesData.Children.Remove(grid);
+            
+        }
+        
     }
 }
