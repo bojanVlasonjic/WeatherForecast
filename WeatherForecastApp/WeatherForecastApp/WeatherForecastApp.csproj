@@ -66,8 +66,10 @@
     <Compile Include="City.cs" />
     <Compile Include="Clouds.cs" />
     <Compile Include="Coord.cs" />
+    <Compile Include="List.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="OpenWeatherCities.cs" />
+    <Compile Include="Rain.cs" />
     <Compile Include="RestRequest.cs" />
     <Compile Include="RestResponse.cs" />
     <Compile Include="RootObject.cs" />
