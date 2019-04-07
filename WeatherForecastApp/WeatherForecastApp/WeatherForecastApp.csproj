@@ -63,10 +63,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="BinaryIO.cs" />
+    <Compile Include="RootObjectIO.cs" />
     <Compile Include="City.cs" />
     <Compile Include="Clouds.cs" />
     <Compile Include="Coord.cs" />
+    <Compile Include="FavoriteCities.cs" />
     <Compile Include="List.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="OpenWeatherCities.cs" />
@@ -195,6 +196,34 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="data\files\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\searchIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\cloudy.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\foggy.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\rainy.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\snowy.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\sunny.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
