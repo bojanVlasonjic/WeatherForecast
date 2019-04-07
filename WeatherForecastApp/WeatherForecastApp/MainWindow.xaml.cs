@@ -259,7 +259,7 @@ namespace WeatherForecastApp
             int averageTemp = (int)degrees.Average();
             int maxTemp = degrees.Max();
             int minTemp = degrees.Min();
-            int threshold = 5;
+            int threshold = 0;
 
             int graphSuppress = maxTemp - minTemp + threshold;
 
