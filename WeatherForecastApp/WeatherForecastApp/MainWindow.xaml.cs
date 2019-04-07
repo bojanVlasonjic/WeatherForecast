@@ -15,6 +15,7 @@ using System.Windows.Shapes;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Windows.Media.Animation;
+using System.Windows.Threading;
 
 namespace WeatherForecastApp
 {
@@ -24,11 +25,11 @@ namespace WeatherForecastApp
     public partial class MainWindow : Window
     {
 
-        const string sunnyBackgroundPath = "data/images/sunny.jpg";
-        const string cloudyBackgroundPath = "data/images/cloudy.jpg";
-        const string snowyBackgroundPath = "data/images/snowy.jpg";
-        const string rainyBackgroundPath = "data/images/rainy.jpg";
-        const string foggyBackgroundPath = "data/images/foggy.jpg";
+        const string sunnyBackgroundPath = "SunnyBackground";
+        const string cloudyBackgroundPath = "CloudyBackground";
+        const string snowyBackgroundPath = "SnowyBackground";
+        const string rainyBackgroundPath = "RainyBackground";
+        const string foggyBackgroundPath = "FoggyBackground";
 
         const string deleteFavoritesIconPath = "data/icons/deleteCross.png";
         const string sunnyIconPath = "data/icons/sunnyIcon.png";
@@ -44,6 +45,12 @@ namespace WeatherForecastApp
         static RestRequest rest_request = new RestRequest(); //object used for sending request to server
         static OpenWeatherCities openWeatherCities;
         static RootObject root;
+        static FavoriteCities favoriteCities;
+
+        static DispatcherTimer userNotificationTimer = new DispatcherTimer
+        {
+            Interval = TimeSpan.FromSeconds(4)
+        };
 
         static bool isFavoritesShown = false;
 
@@ -203,8 +210,12 @@ namespace WeatherForecastApp
         }
 
         /* Graph method */
-        public void ReloadWeatherByHours(int[] degrees)
+        public void ReloadWeatherByHours(int[] degrees, string[] hours)
         {
+            if (hours.Length != 5) throw new ArgumentException("Hours should be string[5]");
+
+
+
             int averageTemp = (int)degrees.Average();
             int maxTemp = degrees.Max();
             int minTemp = degrees.Min();
@@ -303,6 +314,13 @@ namespace WeatherForecastApp
             WeatherHour4.SetValue(Canvas.LeftProperty, maxWidth * 3 / 4 - WeatherHour4.ActualWidth / 2);
             WeatherHour5.SetValue(Canvas.LeftProperty, maxWidth * 4 / 4 - WeatherHour5.ActualWidth / 2);
 
+            WeatherHour1.Text = hours[0];
+            WeatherHour2.Text = hours[1];
+            WeatherHour3.Text = hours[2];
+            WeatherHour4.Text = hours[3];
+            WeatherHour5.Text = hours[4];
+
+
             Polyline polyline = new Polyline();
             polyline.StrokeThickness = 3;
             polyline.Stroke = brush;
@@ -314,15 +332,27 @@ namespace WeatherForecastApp
         private void loadWeatherByHours(object sender, EventArgs e)                                     //Method called on window load
         {
             openWeatherCities = new OpenWeatherCities(); //WARNING! Loading huge data (cities)
-            ReloadWeatherByHours(new int[] { 5, 7, 10, 15, 16, 20, 18, 14, 11, 8});
-            
+            favoriteCities = new FavoriteCities();
+            ReloadWeatherByHours(new int[] { 5, 7, 10, 15, 16, 20, 18, 14, 11, 8}, new string[5] { "00:00", "06:00", "12:00", "18:00", "24:00" });
 
 
+            AddAllCitiesToFavoriteHolder();
         }
+
+
+        //Add favorite cities to favorite holder
+        private void AddAllCitiesToFavoriteHolder()
+        {
+            foreach(string city in favoriteCities.Cities)
+            {
+                AddItemToFavorites(city);
+            }
+        }
+
 
         private void WindowSizeChanged(object sender, EventArgs e)
         {
-            ReloadWeatherByHours(new int[] { 5, 7, 10, 15, 16, 20, 18, 14, 11, 8, 2, 20, 18, 14, 11, 8, 2 });
+            ReloadWeatherByHours(new int[] { 5, 7, 10, 15, 16, 20, 18, 14, 11, 8, 2, 20, 18, 14, 11, 8, 2 }, new string[5] { "00:00", "06:00", "12:00", "18:00", "24:00" });
         }
 
 
@@ -335,10 +365,22 @@ namespace WeatherForecastApp
 
 
         /* Button events */
-        private void addToFavouritesBtn_Click(object sender, RoutedEventArgs e)
+        private void addToFavouritesBtn_Click(object sender, RoutedEventArgs e) //Add current city to favorites
         {
 
-            AddItemToFavorites(root.city.name);
+            if (!favoriteCities.CityExists(root.city.name))
+            {
+                favoriteCities.AddCity(root.city.name);
+                AddItemToFavorites(root.city.name);
+                NotifyUser("Current location has been added to favorites");
+            }
+            else
+            {
+                NotifyUser("Current location is already in favorites");
+            }
+
+           
+            
 
 
         }
@@ -418,14 +460,14 @@ namespace WeatherForecastApp
 
             if (response.Root == null)
             {
-                MessageBox.Show(response.Message); //something wen't wrong in the response
+                NotifyUser("Can't find place with that name"); //something wen't wrong in the response
                 return null;
             }
 
             //if the json parsed, but some of the importan't data is null
             if(response.Root.city == null || response.Root.list == null)
             {
-                MessageBox.Show("Something went wrong. Please try again in a couple of minutes");
+                NotifyUser("Something went wrong. Please try again in a couple of minutes");
                 return null;
             }
 
@@ -745,7 +787,8 @@ namespace WeatherForecastApp
         //Change background image
         private void ChangeBackgroundImage(string imageSourcePath)
         {
-            ApplicationBackgroundImage.ImageSource = new BitmapImage(new Uri(imageSourcePath, UriKind.Relative));   
+            //ApplicationBackgroundImage.ImageSource = new BitmapImage(new Uri(imageSourcePath, UriKind.Relative));
+            ApplicationBackgroundImage.ImageSource = (BitmapImage)Resources[imageSourcePath];
         }
 
 
@@ -868,10 +911,64 @@ namespace WeatherForecastApp
 
             Grid child1 = grid.Children[0] as Grid;
             TextBlock textChild = child1.Children[0] as TextBlock;
+            favoriteCities.RemoveCity(textChild.Text);
 
             FavoritesData.Children.Remove(grid);
             
         }
-        
+
+        private void searchBtn_Click(object sender, RoutedEventArgs e)
+        {
+            root = sendRequestForecast(searchTextBox.Text);
+            
+            if (root != null)
+            {
+                ChangeDisplayData();
+            }
+            SearchSelectionWindow.Visibility = Visibility.Hidden;
+        }
+
+
+        private void NotifyUser(string message)
+        {
+            if (!userNotificationTimer.IsEnabled)
+            {
+                DoubleAnimation da = new DoubleAnimation
+                {
+                    From = 0,
+                    To = 1,
+                    Duration = new Duration(TimeSpan.FromSeconds(0.55)),
+                    AutoReverse = false
+                };
+
+                UserNotificationMessage.Text = message;
+                UserNotificationMessage.BeginAnimation(OpacityProperty, da);
+                userNotificationTimer.Tick += NotificationMessageTimeout;
+                userNotificationTimer.Start();
+            }
+            else
+            {
+                userNotificationTimer.Stop();
+                UserNotificationMessage.Text = message;
+                userNotificationTimer.Tick += NotificationMessageTimeout;
+                userNotificationTimer.Start();
+            }
+        }
+
+        private void NotificationMessageTimeout(object sender, EventArgs e)
+        {
+
+            DoubleAnimation da = new DoubleAnimation
+            {
+                From = 1,
+                To = 0,
+                Duration = new Duration(TimeSpan.FromSeconds(0.55)),
+                AutoReverse = false
+            };
+            UserNotificationMessage.BeginAnimation(OpacityProperty, da);
+
+            (sender as DispatcherTimer).Stop();
+        }
+
     }
 }
