@@ -559,7 +559,7 @@ namespace WeatherForecastApp
             double minTemp = 100000;
             double maxTemp = -100000;
 
-            const int endIndex = 40;
+            int endIndex = root.list.Count;
 
             //update the temperature for the following 5 days, measuring min and max temp over 24 hours from now
             // 3 hours * 8 intervals = 24 hours; 8 intervals * 5 days = 40
