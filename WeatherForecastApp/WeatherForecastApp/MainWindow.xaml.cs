@@ -55,6 +55,8 @@ namespace WeatherForecastApp
 
         static bool isFavoritesShown = false;
 
+        static string currentCity;
+
 
         public MainWindow()
         {
@@ -95,6 +97,7 @@ namespace WeatherForecastApp
                 {
                     updateBasicTemperatureData(root);   //Update data here, when fade out is finished
                     updateDailyTemperatureData();
+                    currentCity = root.city.name;
                 }
 
             }
@@ -471,8 +474,8 @@ namespace WeatherForecastApp
 
         private void refreshBtn_Click(object sender, RoutedEventArgs e)
         {
-            //za sad po default-u dobavi podatke za novi sad
-            root = sendRequestForecast("Novi Sad");
+           
+            root = sendRequestForecast(currentCity); //updating data from server
 
             //refresh the displayed data
             if(root != null)
@@ -847,12 +850,15 @@ namespace WeatherForecastApp
         
         private void backgroundFadeOutCompleted(object sender, EventArgs e)
         {
-            updateBasicTemperatureData(root);   //Update data here, when fade out is finished
-            updateDailyTemperatureData();
+            
 
             //memorising the last updated location, in order for it to load at the beginning
             if(root != null)
             {
+                updateBasicTemperatureData(root);   //Update data here, when fade out is finished
+                updateDailyTemperatureData();
+
+                currentCity = root.city.name;
                 RootObjectIO.WriteToFile(root);
             }
             
