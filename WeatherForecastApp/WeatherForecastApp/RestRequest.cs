@@ -92,7 +92,7 @@ namespace WeatherForecastApp
             }
             else
             {
-                restResponse.Message = $"Can't find city with name {CityName}";
+                restResponse.Message = $"Can't find place with name {CityName}";
             }
 
             return restResponse;

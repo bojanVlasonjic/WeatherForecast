@@ -32,13 +32,13 @@ namespace WeatherForecastApp
         const string rainyBackgroundPath = "RainyBackground";
         const string foggyBackgroundPath = "FoggyBackground";
 
-        const string deleteFavoritesIconPath = "data/icons/deleteCross.png";
-        const string sunnyIconPath = "data/icons/sunnyIcon.png";
-        const string cloudyIconPath = "data/icons/cloudyIcon.png";
-        const string snowyIconPath = "data/icons/snowyIcon.png";
-        const string rainyIconPath = "data/icons/rainyIcon.png";
-        const string cloudySunnyIconPath = "data/icons/cloudySunnyIcon.png";
-        const string thunderstormIconPath = "data/icons/thunderstormIcon.png";
+        const string deleteFavoritesIconPath = "DeleteCross";
+        const string sunnyIconPath = "SunnyIcon";
+        const string cloudyIconPath = "CloudyIcon";
+        const string snowyIconPath = "SnowyIcon";
+        const string rainyIconPath = "RainyIcon";
+        const string cloudySunnyIconPath = "SunnyCloudyIcon";
+        const string thunderstormIconPath = "ThunderStormIcon";
 
         static HttpClient client = new HttpClient(); //used for multiple requests to server
         static RestRequest rest_request = new RestRequest(); //object used for sending request to server
@@ -258,9 +258,17 @@ namespace WeatherForecastApp
             int minTemp = degrees.Min();
             int threshold = 5;
 
+            int graphSuppress = maxTemp - minTemp + threshold;
+
             double maxHeight = WeatherByHoursCanvas.ActualHeight;
             double maxWidth = WeatherByHoursCanvas.ActualWidth;
             double step = maxWidth / (degrees.Length - 1);
+
+            WeatherHour1.Text = hours[0];
+            WeatherHour2.Text = hours[1];
+            WeatherHour3.Text = hours[2];
+            WeatherHour4.Text = hours[3];
+            WeatherHour5.Text = hours[4];
 
             Brush brush = Brushes.White;
 
@@ -278,12 +286,12 @@ namespace WeatherForecastApp
             }
 
             WeatherHourMinTemp.Text = minTemp.ToString() + "°C";
-            WeatherHourMinTemp.SetValue(Canvas.TopProperty, maxHeight - WeatherHourMinTemp.ActualHeight / 2 - (Math.Abs(minTemp) + minTemp + threshold / 2) * maxHeight / (maxTemp + threshold + Math.Abs(minTemp)));
-            WeatherHourMinTemp.SetValue(Canvas.LeftProperty, -WeatherHourMinTemp.ActualWidth - 10);
+            WeatherHourMinTemp.SetValue(Canvas.TopProperty, -WeatherHourMinTemp.ActualHeight/2 + (maxTemp - minTemp + threshold / 2) * maxHeight / graphSuppress);
+            WeatherHourMinTemp.SetValue(Canvas.LeftProperty, -WeatherHourMinTemp.ActualWidth - 15);
 
             PointCollection ps1 = new PointCollection();
-            ps1.Add(new Point(0, maxHeight - (Math.Abs(minTemp) + minTemp + threshold / 2) * maxHeight / (maxTemp + threshold + Math.Abs(minTemp))));
-            ps1.Add(new Point(maxWidth, maxHeight - (Math.Abs(minTemp) + minTemp + threshold / 2) * maxHeight / (maxTemp + threshold + Math.Abs(minTemp))));
+            ps1.Add(new Point(0, (maxTemp - minTemp + threshold / 2) * maxHeight / graphSuppress));
+            ps1.Add(new Point(maxWidth, (maxTemp - minTemp + threshold / 2) * maxHeight / graphSuppress));
             Polyline line1 = new Polyline();
             line1.StrokeThickness = 1;
             line1.Stroke = Brushes.White;
@@ -293,12 +301,12 @@ namespace WeatherForecastApp
 
 
             WeatherHourAverageTemp.Text = averageTemp.ToString() + "°C";
-            WeatherHourAverageTemp.SetValue(Canvas.TopProperty, maxHeight - WeatherHourAverageTemp.ActualHeight / 2 - (Math.Abs(minTemp) + averageTemp + threshold / 2) * maxHeight / (maxTemp + threshold + Math.Abs(minTemp)));
-            WeatherHourAverageTemp.SetValue(Canvas.LeftProperty, -WeatherHourAverageTemp.ActualWidth - 10);
+            WeatherHourAverageTemp.SetValue(Canvas.TopProperty, -WeatherHourAverageTemp.ActualHeight / 2 + (maxTemp - averageTemp + threshold / 2) * maxHeight / graphSuppress);
+            WeatherHourAverageTemp.SetValue(Canvas.LeftProperty, -WeatherHourAverageTemp.ActualWidth - 15);
 
             PointCollection ps3 = new PointCollection();
-            ps3.Add(new Point(0, maxHeight - (Math.Abs(minTemp) + averageTemp + threshold / 2) * maxHeight / (maxTemp + threshold + Math.Abs(minTemp))));
-            ps3.Add(new Point(maxWidth, maxHeight - (Math.Abs(minTemp) + averageTemp + threshold / 2) * maxHeight / (maxTemp + threshold + Math.Abs(minTemp))));
+            ps3.Add(new Point(0, (maxTemp - averageTemp + threshold / 2) * maxHeight / graphSuppress));
+            ps3.Add(new Point(maxWidth, (maxTemp - averageTemp + threshold / 2) * maxHeight / graphSuppress));
             Polyline line3 = new Polyline();
             line3.StrokeThickness = 1;
             line3.Stroke = Brushes.White;
@@ -309,12 +317,12 @@ namespace WeatherForecastApp
 
 
             WeatherHourMaxTemp.Text = maxTemp.ToString() + "°C";
-            WeatherHourMaxTemp.SetValue(Canvas.TopProperty, maxHeight - WeatherHourMaxTemp.ActualHeight / 2 - (Math.Abs(minTemp) + maxTemp + threshold / 2) * maxHeight / (maxTemp + threshold + Math.Abs(minTemp)));
-            WeatherHourMaxTemp.SetValue(Canvas.LeftProperty, -WeatherHourMaxTemp.ActualWidth - 10);
+            WeatherHourMaxTemp.SetValue(Canvas.TopProperty, -WeatherHourMaxTemp.ActualHeight / 2 + (maxTemp - maxTemp + threshold / 2) * maxHeight / graphSuppress);
+            WeatherHourMaxTemp.SetValue(Canvas.LeftProperty, -WeatherHourMaxTemp.ActualWidth - 15);
 
             PointCollection ps2 = new PointCollection();
-            ps2.Add(new Point(0, maxHeight - (Math.Abs(minTemp) + maxTemp + threshold / 2) * maxHeight / (maxTemp + threshold + Math.Abs(minTemp))));
-            ps2.Add(new Point(maxWidth, maxHeight - (Math.Abs(minTemp) + maxTemp + threshold / 2) * maxHeight / (maxTemp + threshold + Math.Abs(minTemp))));
+            ps2.Add(new Point(0, (maxTemp - maxTemp + threshold / 2) * maxHeight / graphSuppress));
+            ps2.Add(new Point(maxWidth, (maxTemp - maxTemp + threshold / 2) * maxHeight / graphSuppress));
             Polyline line2 = new Polyline();
             line2.StrokeThickness = 1;
             line2.Stroke = Brushes.White;
@@ -326,7 +334,7 @@ namespace WeatherForecastApp
             int i;
             for (i = 0; i < degrees.Length; i++)
             {
-                double y = maxHeight - (Math.Abs(minTemp) + degrees[i] + threshold / 2) * maxHeight / (maxTemp + threshold + Math.Abs(minTemp));
+                double y = (maxTemp - degrees[i] + threshold / 2) * maxHeight / graphSuppress;
                 points.Add(new Point(i * step, y));
             }
 
@@ -351,11 +359,7 @@ namespace WeatherForecastApp
             WeatherHour4.SetValue(Canvas.LeftProperty, maxWidth * 3 / 4 - WeatherHour4.ActualWidth / 2);
             WeatherHour5.SetValue(Canvas.LeftProperty, maxWidth * 4 / 4 - WeatherHour5.ActualWidth / 2);
 
-            WeatherHour1.Text = hours[0];
-            WeatherHour2.Text = hours[1];
-            WeatherHour3.Text = hours[2];
-            WeatherHour4.Text = hours[3];
-            WeatherHour5.Text = hours[4];
+            
 
 
             Polyline polyline = new Polyline();
@@ -370,7 +374,7 @@ namespace WeatherForecastApp
         {
             //WARNING! Loading huge data (cities) -> no worries, I made a thread for it :P
             favoriteCities = new FavoriteCities();
-            ReloadWeatherByHours(new int[] { 5, 7, 10, 15, 16, 20, 18, 14, 11, 8}, new string[5] { "00:00", "06:00", "12:00", "18:00", "24:00" });
+            ReloadWeatherByHours(new int[] { 5, 7, 10, 15, 16, 20, 18, 14, 11, 8, -55}, new string[5] { "00:00", "06:00", "12:00", "18:00", "24:00" });
 
 
             AddAllCitiesToFavoriteHolder();
@@ -405,15 +409,22 @@ namespace WeatherForecastApp
         private void addToFavouritesBtn_Click(object sender, RoutedEventArgs e) //Add current city to favorites
         {
 
-            if (!favoriteCities.CityExists(root.city.name))
+            if (root != null)
             {
-                favoriteCities.AddCity(root.city.name);
-                AddItemToFavorites(root.city.name);
-                NotifyUser("Current location has been added to favorites");
+                if (!favoriteCities.CityExists(root.city.name))
+                {
+                    favoriteCities.AddCity(root.city.name);
+                    AddItemToFavorites(root.city.name);
+                    NotifyUser("Current location has been added to favorites");
+                }
+                else
+                {
+                    NotifyUser("Current location is already in favorites");
+                }
             }
             else
             {
-                NotifyUser("Current location is already in favorites");
+                NotifyUser("Can't add current place to favorites");
             }
 
            
@@ -456,7 +467,7 @@ namespace WeatherForecastApp
             deleteBtn.ToolTip = "Delete";
 
             Image img = new Image();
-            img.Source = (ImageSource)new ImageSourceConverter().ConvertFrom(deleteFavoritesIconPath);
+            img.Source = (BitmapImage)Resources[deleteFavoritesIconPath];
             img.SetValue(RenderOptions.BitmapScalingModeProperty, BitmapScalingMode.HighQuality);
 
             deleteBtn.Content = img;
@@ -497,7 +508,7 @@ namespace WeatherForecastApp
 
             if (response.Root == null)
             {
-                NotifyUser("Can't find place with that name"); //something wen't wrong in the response
+                NotifyUser(response.Message); //something wen't wrong in the response
                 return null;
             }
 
@@ -533,6 +544,7 @@ namespace WeatherForecastApp
             
             humidityTextBlock.Text = $"Humidity: {root.list[0].main.humidity}%";
             windSpeedTextBlock.Text = $"Wind speed: {root.list[0].wind.speed} m/s";
+            visibilityTextBlock.Text = $"Wind direction: {Math.Round(root.list[0].wind.deg, 0)}°";
 
             pressureTextBlock.Text = $"Pressure: {root.list[0].main.pressure} mbar";
 
@@ -818,7 +830,8 @@ namespace WeatherForecastApp
         //Might cause troubles with invalid path
         private void ChangeIcon(Image image, string imageSourcePath)
         {
-            image.Source = (ImageSource) new ImageSourceConverter().ConvertFrom(imageSourcePath);
+            //image.Source = (ImageSource) new ImageSourceConverter().ConvertFrom(imageSourcePath);
+            image.Source = (BitmapImage)Resources[imageSourcePath];
         }
 
         //Change background image
@@ -966,13 +979,16 @@ namespace WeatherForecastApp
 
         private void searchBtn_Click(object sender, RoutedEventArgs e)
         {
-            root = sendRequestForecast(searchTextBox.Text);
-            
-            if (root != null)
+            if (!searchTextBox.Text.Equals("Search..."))
             {
-                ChangeDisplayData();
+                root = sendRequestForecast(searchTextBox.Text);
+
+                if (root != null)
+                {
+                    ChangeDisplayData();
+                }
+                SearchSelectionWindow.Visibility = Visibility.Hidden;
             }
-            SearchSelectionWindow.Visibility = Visibility.Hidden;
         }
 
 

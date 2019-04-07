@@ -135,20 +135,12 @@
     </Resource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="data\images\sunny.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <None Include="data\images\sunny.jpg" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="data\images\cloudy.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="data\images\rainy.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="data\images\snowy.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <None Include="data\images\cloudy.jpg" />
+    <None Include="data\images\rainy.jpg" />
+    <None Include="data\images\snowy.jpg" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\favorites.png" />
@@ -162,34 +154,18 @@
     <Resource Include="Images\thunderstormIcon.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="data\icons\cloudyIcon.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="data\icons\cloudySunnyIcon.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="data\icons\rainyIcon.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="data\icons\snowyIcon.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="data\icons\sunnyIcon.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="data\icons\thunderstormIcon.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <None Include="data\icons\cloudyIcon.png" />
+    <None Include="data\icons\cloudySunnyIcon.png" />
+    <None Include="data\icons\rainyIcon.png" />
+    <None Include="data\icons\snowyIcon.png" />
+    <None Include="data\icons\sunnyIcon.png" />
+    <None Include="data\icons\thunderstormIcon.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="data\images\foggy.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <None Include="data\images\foggy.jpg" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="data\icons\deleteCross.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <None Include="data\icons\deleteCross.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\deleteCross.png" />

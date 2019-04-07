@@ -8,6 +8,7 @@
         Icon="Images/sunnyIcon.png"
         Loaded="loadWeatherByHours"
         SizeChanged="WindowSizeChanged"
+        WindowState="Maximized"
         Title="Weather" MinHeight="600" Height="600" MinWidth="1024" Width="1024" WindowStartupLocation="CenterScreen">
 
 
@@ -23,7 +24,17 @@
         <BitmapImage x:Key="CloudyBackground" RenderOptions.BitmapScalingMode="HighQuality" UriSource="Images/cloudy.jpg" />
         <BitmapImage x:Key="FoggyBackground" RenderOptions.BitmapScalingMode="HighQuality" UriSource="Images/foggy.jpg" />
         <BitmapImage x:Key="RainyBackground" RenderOptions.BitmapScalingMode="HighQuality" UriSource="Images/rainy.jpg" />
-        <BitmapImage x:Key="SnowyBackground" RenderOptions.BitmapScalingMode="HighQuality" UriSource="Images/snowy.jpg" />        
+        <BitmapImage x:Key="SnowyBackground" RenderOptions.BitmapScalingMode="HighQuality" UriSource="Images/snowy.jpg" />
+
+        <BitmapImage x:Key="SunnyIcon" RenderOptions.BitmapScalingMode="HighQuality" UriSource="Images/sunnyIcon.png" />
+        <BitmapImage x:Key="CloudyIcon" RenderOptions.BitmapScalingMode="HighQuality" UriSource="Images/cloudyIcon.png" />
+        <BitmapImage x:Key="SunnyCloudyIcon" RenderOptions.BitmapScalingMode="HighQuality" UriSource="Images/cloudySunnyIcon.png" />
+        <BitmapImage x:Key="SnowyIcon" RenderOptions.BitmapScalingMode="HighQuality" UriSource="Images/snowyIcon.png" />
+        <BitmapImage x:Key="RainyIcon" RenderOptions.BitmapScalingMode="HighQuality" UriSource="Images/rainyIcon.png" />
+        <BitmapImage x:Key="ThunderStormIcon" RenderOptions.BitmapScalingMode="HighQuality" UriSource="Images/thunderstormIcon.png" />
+        
+        <BitmapImage x:Key="DeleteCross" RenderOptions.BitmapScalingMode="HighQuality" UriSource="Images/deleteCross.png" />
+        
 
 
         <Style TargetType="{x:Type Button}">
@@ -111,7 +122,7 @@
                     <RowDefinition></RowDefinition>
                 </Grid.RowDefinitions>
 
-                <Grid UIElement.MouseEnter="SearchOption1_MouseEnter" UIElement.MouseLeave="SearchOption1_MouseLeave" Grid.Row="0" x:Name="SearchOption1"
+                <Grid UIElement.MouseEnter="SearchOption1_MouseEnter" UIElement.MouseLeave="SearchOption1_MouseLeave" Visibility="Hidden" Grid.Row="0" x:Name="SearchOption1"
                       UIElement.MouseDown="SearchOption1_MouseDown">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition></ColumnDefinition>
@@ -124,7 +135,7 @@
 
                 </Grid>
 
-                <Grid UIElement.MouseEnter="SearchOption2_MouseEnter" UIElement.MouseLeave="SearchOption2_MouseLeave" Grid.Row="1" x:Name="SearchOption2"
+                <Grid UIElement.MouseEnter="SearchOption2_MouseEnter" UIElement.MouseLeave="SearchOption2_MouseLeave" Grid.Row="1" Visibility="Hidden" x:Name="SearchOption2"
                       UIElement.MouseDown="SearchOption2_MouseDown">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition></ColumnDefinition>
@@ -137,7 +148,7 @@
 
                 </Grid>
 
-                <Grid UIElement.MouseEnter="SearchOption3_MouseEnter" UIElement.MouseLeave="SearchOption3_MouseLeave" Grid.Row="2" x:Name="SearchOption3"
+                <Grid UIElement.MouseEnter="SearchOption3_MouseEnter" UIElement.MouseLeave="SearchOption3_MouseLeave" Visibility="Hidden" Grid.Row="2" x:Name="SearchOption3"
                       UIElement.MouseDown="SearchOption3_MouseDown">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition></ColumnDefinition>
@@ -197,7 +208,7 @@
                         <RowDefinition Height="35"></RowDefinition>
                     </Grid.RowDefinitions>
 
-                    <TextBlock x:Name="cityNameTextBlock" Style="{StaticResource WhiteText}" Grid.Column="0" Grid.ColumnSpan="3" Text="Novi Sad, RS" FontWeight="SemiBold" FontSize="42"
+                    <TextBlock x:Name="cityNameTextBlock" Style="{StaticResource WhiteText}" Grid.Column="0" Grid.ColumnSpan="3" Text="----, --" FontWeight="SemiBold" FontSize="42"
                                VerticalAlignment="Bottom" Margin="0,0,0,0" HorizontalAlignment="Center"></TextBlock>
                     <Grid Grid.Column="1" Grid.Row="1">
                         <Grid.ColumnDefinitions>
@@ -206,8 +217,8 @@
                             <ColumnDefinition></ColumnDefinition>
                         </Grid.ColumnDefinitions>
 
-                        <Image x:Name="weatherIcon" Grid.Column="0" RenderOptions.BitmapScalingMode="HighQuality" Source="Images/sunnyIcon.png"></Image>
-                        <TextBlock x:Name="temperatureTextBlock" Grid.Column="1" Grid.ColumnSpan="2" Text="20°C" FontSize="94"
+                        <Image x:Name="weatherIcon" Grid.Column="0" RenderOptions.BitmapScalingMode="HighQuality" Source="Images/cloudySunnyIcon.png"></Image>
+                        <TextBlock x:Name="temperatureTextBlock" Grid.Column="1" Grid.ColumnSpan="2" Text="--°C" FontSize="94"
                                    Style="{StaticResource WhiteText}" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="36,-18,10,0" Width="222"></TextBlock>
 
                     </Grid>
@@ -227,21 +238,21 @@
                         </Grid.RowDefinitions>
 
                         <TextBlock x:Name="humidityTextBlock" Grid.Column="0" Grid.Row="0" Foreground="White" Style="{StaticResource CenterTextBlock}"
-                                   FontSize="15" Text="Humidity: 55"></TextBlock>
+                                   FontSize="15" Text="Humidity: --"></TextBlock>
                         <TextBlock x:Name="windSpeedTextBlock" Grid.Column="1" Grid.Row="0" Foreground="White" Style="{StaticResource CenterTextBlock}"
-                                   FontSize="15" Text="Wind speed: 15 km/h"></TextBlock>
+                                   FontSize="15" Text="Wind speed: --km/h"></TextBlock>
                         <TextBlock x:Name="visibilityTextBlock" Grid.Column="0" Grid.Row="1" Foreground="White" Style="{StaticResource CenterTextBlock}"
-                                   FontSize="15" Text="Visibility: 30 km"></TextBlock>
+                                   FontSize="15" Text="Wind direction: --km"></TextBlock>
                         <TextBlock x:Name="pressureTextBlock" Grid.Column="1" Grid.Row="1" Foreground="White" Style="{StaticResource CenterTextBlock}"
-                                   FontSize="15" Text="Pressure: 1008"></TextBlock>
+                                   FontSize="15" Text="Pressure: --mb"></TextBlock>
                         <TextBlock x:Name="maxTempTextBlock" Grid.Column="0" Grid.Row="2" Foreground="White" Style="{StaticResource CenterTextBlock}"
-                                   FontSize="15" Text="Maximum: 23°C"></TextBlock>
+                                   FontSize="15" Text="Maximum: --°C"></TextBlock>
                         <TextBlock x:Name="minTempTextBlock" Grid.Column="1" Grid.Row="2" Foreground="White" Style="{StaticResource CenterTextBlock}"
-                                   FontSize="15" Text="Minimum: 10°C"></TextBlock>
+                                   FontSize="15" Text="Minimum: --°C"></TextBlock>
                         <TextBlock x:Name="smallDescrTextBlock" Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="2" Foreground="White" Style="{StaticResource CenterTextBlock}"
-                                   FontSize="15" Text="Small description"></TextBlock>
+                                   FontSize="15" Text="----"></TextBlock>
                         <TextBlock x:Name="updateTimeTextBlock" Grid.Column="0" Grid.Row="4" Grid.ColumnSpan="2" Foreground="White" Style="{StaticResource CenterTextBlock}"
-                                   FontSize="15" Text="Updated at 12:04 PM"></TextBlock>
+                                   FontSize="15" Text="No internet connection"></TextBlock>
 
                     </Grid>
 
@@ -266,10 +277,10 @@
                             <RowDefinition></RowDefinition>
                         </Grid.RowDefinitions>
 
-                        <TextBlock x:Name="day1TextBlock" Grid.Row="0" FontSize="16" Foreground="white" FontWeight="SemiBold" Text="Monday" Style="{StaticResource CenterTextBlock}"></TextBlock>
+                        <TextBlock x:Name="day1TextBlock" Grid.Row="0" FontSize="16" Foreground="white" FontWeight="SemiBold" Text="----" Style="{StaticResource CenterTextBlock}"></TextBlock>
                         <Image x:Name="day1WeatherIcon" Grid.Row="1" RenderOptions.BitmapScalingMode="HighQuality" Source="Images/cloudySunnyIcon.png"></Image>
-                        <TextBlock x:Name="day1TempTextBlock" Grid.Row="2" FontSize="22" FontWeight="SemiBold" Foreground="white" Text="23°C / 10°C" Style="{StaticResource CenterTextBlock}"></TextBlock>
-                        <TextBlock x:Name="smallDescr1TextBlock" Grid.Row="3" FontSize="16" Foreground="white" Text="Small description" Style="{StaticResource CenterTextBlock}"></TextBlock>
+                        <TextBlock x:Name="day1TempTextBlock" Grid.Row="2" FontSize="22" FontWeight="SemiBold" Foreground="white" Text="--°C / --°C" Style="{StaticResource CenterTextBlock}"></TextBlock>
+                        <TextBlock x:Name="smallDescr1TextBlock" Grid.Row="3" FontSize="16" Foreground="white" Text="----" Style="{StaticResource CenterTextBlock}"></TextBlock>
 
                     </Grid>
 
@@ -281,10 +292,10 @@
                             <RowDefinition></RowDefinition>
                         </Grid.RowDefinitions>
 
-                        <TextBlock x:Name="day2TextBlock" Grid.Row="0" FontSize="16" Foreground="white" FontWeight="SemiBold" Text="Tuesday" Style="{StaticResource CenterTextBlock}"></TextBlock>
+                        <TextBlock x:Name="day2TextBlock" Grid.Row="0" FontSize="16" Foreground="white" FontWeight="SemiBold" Text="----" Style="{StaticResource CenterTextBlock}"></TextBlock>
                         <Image x:Name="day2WeatherIcon" Grid.Row="1" RenderOptions.BitmapScalingMode="HighQuality" Source="Images/cloudySunnyIcon.png"></Image>
-                        <TextBlock x:Name="day2TempTextBlock" Grid.Row="2" FontSize="22" FontWeight="SemiBold" Foreground="white" Text="18°C / 9°C" Style="{StaticResource CenterTextBlock}"></TextBlock>
-                        <TextBlock x:Name="smallDescr2TextBlock" Grid.Row="3" FontSize="16" Foreground="white" Text="Small description" Style="{StaticResource CenterTextBlock}"></TextBlock>
+                        <TextBlock x:Name="day2TempTextBlock" Grid.Row="2" FontSize="22" FontWeight="SemiBold" Foreground="white" Text="--°C / --°C" Style="{StaticResource CenterTextBlock}"></TextBlock>
+                        <TextBlock x:Name="smallDescr2TextBlock" Grid.Row="3" FontSize="16" Foreground="white" Text="----" Style="{StaticResource CenterTextBlock}"></TextBlock>
 
                     </Grid>
 
@@ -296,10 +307,10 @@
                             <RowDefinition></RowDefinition>
                         </Grid.RowDefinitions>
 
-                        <TextBlock x:Name="day3TextBlock" Grid.Row="0" FontSize="16" Foreground="white" FontWeight="SemiBold" Text="Wednesday" Style="{StaticResource CenterTextBlock}"></TextBlock>
+                        <TextBlock x:Name="day3TextBlock" Grid.Row="0" FontSize="16" Foreground="white" FontWeight="SemiBold" Text="----" Style="{StaticResource CenterTextBlock}"></TextBlock>
                         <Image x:Name="day3WeatherIcon" Grid.Row="1" RenderOptions.BitmapScalingMode="HighQuality" Source="Images/cloudySunnyIcon.png"></Image>
-                        <TextBlock x:Name="day3TempTextBlock" Grid.Row="2" FontSize="22" FontWeight="SemiBold" Foreground="white" Text="18°C / 10°C" Style="{StaticResource CenterTextBlock}"></TextBlock>
-                        <TextBlock x:Name="smallDescr3TextBlock" Grid.Row="3" FontSize="16" Foreground="white" Text="Small description" Style="{StaticResource CenterTextBlock}"></TextBlock>
+                        <TextBlock x:Name="day3TempTextBlock" Grid.Row="2" FontSize="22" FontWeight="SemiBold" Foreground="white" Text="--°C / --°C" Style="{StaticResource CenterTextBlock}"></TextBlock>
+                        <TextBlock x:Name="smallDescr3TextBlock" Grid.Row="3" FontSize="16" Foreground="white" Text="----" Style="{StaticResource CenterTextBlock}"></TextBlock>
 
                     </Grid>
 
@@ -311,10 +322,10 @@
                             <RowDefinition></RowDefinition>
                         </Grid.RowDefinitions>
 
-                        <TextBlock x:Name="day4TextBlock" Grid.Row="0" FontSize="16" Foreground="white" FontWeight="SemiBold" Text="Thursday" Style="{StaticResource CenterTextBlock}"></TextBlock>
+                        <TextBlock x:Name="day4TextBlock" Grid.Row="0" FontSize="16" Foreground="white" FontWeight="SemiBold" Text="----" Style="{StaticResource CenterTextBlock}"></TextBlock>
                         <Image x:Name="day4WeatherIcon" Grid.Row="1" RenderOptions.BitmapScalingMode="HighQuality" Source="Images/cloudySunnyIcon.png"></Image>
-                        <TextBlock x:Name="day4TempTextBlock" Grid.Row="2" FontSize="22" FontWeight="SemiBold" Foreground="white" Text="24°C / 11°C" Style="{StaticResource CenterTextBlock}"></TextBlock>
-                        <TextBlock x:Name="smallDescr4TextBlock" Grid.Row="3" FontSize="16" Foreground="white" Text="Small description" Style="{StaticResource CenterTextBlock}"></TextBlock>
+                        <TextBlock x:Name="day4TempTextBlock" Grid.Row="2" FontSize="22" FontWeight="SemiBold" Foreground="white" Text="--°C / --°C" Style="{StaticResource CenterTextBlock}"></TextBlock>
+                        <TextBlock x:Name="smallDescr4TextBlock" Grid.Row="3" FontSize="16" Foreground="white" Text="----" Style="{StaticResource CenterTextBlock}"></TextBlock>
 
                     </Grid>
 
@@ -326,10 +337,10 @@
                             <RowDefinition Height="51"></RowDefinition>
                         </Grid.RowDefinitions>
 
-                        <TextBlock x:Name="day5TextBlock" Grid.Row="0" FontSize="16" Foreground="white" FontWeight="SemiBold" Text="Friday" Style="{StaticResource CenterTextBlock}"></TextBlock>
+                        <TextBlock x:Name="day5TextBlock" Grid.Row="0" FontSize="16" Foreground="white" FontWeight="SemiBold" Text="----" Style="{StaticResource CenterTextBlock}"></TextBlock>
                         <Image x:Name="day5WeatherIcon" Grid.Row="1" RenderOptions.BitmapScalingMode="HighQuality" Source="Images/cloudySunnyIcon.png"></Image>
-                        <TextBlock x:Name="day5TempTextBlock" Grid.Row="2" FontSize="22" FontWeight="SemiBold" Foreground="white" Text="15°C / 5°C" Style="{StaticResource CenterTextBlock}"></TextBlock>
-                        <TextBlock x:Name="smallDescr5TextBlock" Grid.Row="3" FontSize="16" Foreground="white" Text="Small description" Style="{StaticResource CenterTextBlock}"></TextBlock>
+                        <TextBlock x:Name="day5TempTextBlock" Grid.Row="2" FontSize="22" FontWeight="SemiBold" Foreground="white" Text="--°C / --°C" Style="{StaticResource CenterTextBlock}"></TextBlock>
+                        <TextBlock x:Name="smallDescr5TextBlock" Grid.Row="3" FontSize="16" Foreground="white" Text="----" Style="{StaticResource CenterTextBlock}"></TextBlock>
 
                     </Grid>
 
@@ -358,9 +369,9 @@
                         <TextBlock x:Name="WeatherHour3" Text="12:00" Canvas.Bottom="-25" FontSize="16" Foreground="White"/>
                         <TextBlock x:Name="WeatherHour4" Text="18:00" Canvas.Bottom="-25" FontSize="16" Foreground="White"/>
                         <TextBlock x:Name="WeatherHour5" Text="24:00" Canvas.Bottom="-25" FontSize="16" Foreground="White"/>
-                        <TextBlock x:Name="WeatherHourMinTemp" Text="MinTemp" Canvas.Top="0" FontSize="16" Foreground="White"/>
-                        <TextBlock x:Name="WeatherHourAverageTemp" Text="AvgTemp" Canvas.Top="0" FontSize="16" Foreground="White"/>
-                        <TextBlock x:Name="WeatherHourMaxTemp" Text="MaxTemp" Canvas.Top="0" FontSize="16" Foreground="White"/>
+                        <TextBlock x:Name="WeatherHourMinTemp" Width="40" Text="MinTemp" Canvas.Top="0" FontSize="16" Foreground="White"/>
+                        <TextBlock x:Name="WeatherHourAverageTemp" Width="40" Text="AvgTemp" Canvas.Top="0" FontSize="16" Foreground="White"/>
+                        <TextBlock x:Name="WeatherHourMaxTemp" Width="40" Text="MaxTemp" Canvas.Top="0" FontSize="16" Foreground="White"/>
 
 
                     </Canvas>
