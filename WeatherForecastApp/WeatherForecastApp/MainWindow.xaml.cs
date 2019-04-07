@@ -101,6 +101,7 @@ namespace WeatherForecastApp
                     updateBasicTemperatureData(root);   //Update data here, when fade out is finished
                     updateDailyTemperatureData();
                     currentCity = root.city.name;
+                    dayDisplayedTextBlock.Text = $"Currenly showing data for {DateTime.Now.DayOfWeek}";
                 }
 
             }
@@ -489,11 +490,12 @@ namespace WeatherForecastApp
         private void refreshBtn_Click(object sender, RoutedEventArgs e)
         {
 
-            root = sendRequestForecast(currentCity); //updating data from server
+            RootObject root_from_server = sendRequestForecast(currentCity); //updating data from server
 
             //refresh the displayed data
-            if(root != null)
+            if(root_from_server != null)
             {
+                root = root_from_server;
                 ChangeDisplayData();    //replaced method xD
             }
 
@@ -630,7 +632,7 @@ namespace WeatherForecastApp
                 if (i % 2 == 0 && graph_update_flag)
                 {
                     string[] tokens = root.list[i].dt_txt.Split(' ');
-                    graphTimeIntervals[timeIntervalsIndex] = tokens[1];
+                    graphTimeIntervals[timeIntervalsIndex] = tokens[1].Substring(0, tokens[1].Length - 3); //no need for seconds in format
                     timeIntervalsIndex++;
                 }
 
@@ -843,9 +845,10 @@ namespace WeatherForecastApp
         {
             searchTextBox.Text = SearchOption1_Text1.Text;
 
-            root = sendRequestForecast(SearchOption1_Text1.Text);
-            if (root != null)
+            RootObject root_from_server = sendRequestForecast(SearchOption1_Text1.Text);
+            if (root_from_server != null)
             {
+                root = root_from_server;
                 ChangeDisplayData();
             }
 
@@ -858,9 +861,10 @@ namespace WeatherForecastApp
         {
             searchTextBox.Text = SearchOption2_Text1.Text;
 
-            root = sendRequestForecast(SearchOption2_Text1.Text);
-            if (root != null)
+            RootObject root_from_server = sendRequestForecast(SearchOption2_Text1.Text);
+            if (root_from_server != null)
             {
+                root = root_from_server;
                 ChangeDisplayData();
             }
 
@@ -872,9 +876,10 @@ namespace WeatherForecastApp
         {
             searchTextBox.Text = SearchOption3_Text1.Text;
 
-            root = sendRequestForecast(SearchOption3_Text1.Text);
-            if (root != null)
+            RootObject root_from_server = sendRequestForecast(SearchOption3_Text1.Text);
+            if (root_from_server != null)
             {
+                root = root_from_server;
                 ChangeDisplayData();
             }
 
@@ -937,6 +942,9 @@ namespace WeatherForecastApp
 
                 //updating graph
                 ReloadWeatherByHours(graphTemperatures, graphTimeIntervals);
+
+                //updating text block identifying the graph
+                dayDisplayedTextBlock.Text = $"Currenly showing data for {DateTime.Now.DayOfWeek}";
 
                 currentCity = root.city.name;
                 RootObjectIO.WriteToFile(root);
@@ -1027,8 +1035,13 @@ namespace WeatherForecastApp
             Grid grid = (Grid)sender;
             TextBlock textBlock = grid.Children[0] as TextBlock;
 
-            root = sendRequestForecast(textBlock.Text);
-            ChangeDisplayData();
+            RootObject root_from_server = sendRequestForecast(textBlock.Text);
+
+            if(root_from_server != null)
+            {
+                ChangeDisplayData();
+            }
+            
         }
 
         private void DeleteFavoriteItem(object sender, RoutedEventArgs e)
@@ -1048,10 +1061,11 @@ namespace WeatherForecastApp
         {
             if (!searchTextBox.Text.Equals("Search..."))
             {
-                root = sendRequestForecast(searchTextBox.Text);
+                RootObject root_from_server = sendRequestForecast(searchTextBox.Text);
 
-                if (root != null)
+                if (root_from_server != null)
                 {
+                    root = root_from_server;
                     ChangeDisplayData();
                 }
                 SearchSelectionWindow.Visibility = Visibility.Hidden;
@@ -1107,35 +1121,45 @@ namespace WeatherForecastApp
         {
             updateGraphForSelectedDay(day1TextBlock.Text, false);
             ReloadWeatherByHours(graphTemperatures, graphTimeIntervals);
+            dayDisplayedTextBlock.Text = $"Currenly showing data for {day1TextBlock.Text}";
         }
 
         private void Day2_MouseDown(object sender, MouseButtonEventArgs e)
         {
             updateGraphForSelectedDay(day2TextBlock.Text, false);
             ReloadWeatherByHours(graphTemperatures, graphTimeIntervals);
+            dayDisplayedTextBlock.Text = $"Currenly showing data for {day2TextBlock.Text}";
         }
 
         private void Day3_MouseDown(object sender, MouseButtonEventArgs e)
         {
             updateGraphForSelectedDay(day3TextBlock.Text, false);
             ReloadWeatherByHours(graphTemperatures, graphTimeIntervals);
+            dayDisplayedTextBlock.Text = $"Currenly showing data for {day3TextBlock.Text}";
         }
 
         private void Day4_MouseDown(object sender, MouseButtonEventArgs e)
         {
             updateGraphForSelectedDay(day4TextBlock.Text, false);
             ReloadWeatherByHours(graphTemperatures, graphTimeIntervals);
+            dayDisplayedTextBlock.Text = $"Currenly showing data for {day4TextBlock.Text}";
         }
 
         private void Day5_MouseDown(object sender, MouseButtonEventArgs e)
         {
             updateGraphForSelectedDay(day5TextBlock.Text, true);
             ReloadWeatherByHours(graphTemperatures, graphTimeIntervals);
+            dayDisplayedTextBlock.Text = $"Currenly showing data for {day5TextBlock.Text}";
         }
 
 
         private void updateGraphForSelectedDay(string selectedDay, bool lastDay)
         {
+
+            if(root == null)
+            {
+                return;
+            }
 
             int counter = 0;
 
@@ -1163,7 +1187,7 @@ namespace WeatherForecastApp
                     if(counter%2 == 0)
                     {
                         string[] tokens = root.list[i].dt_txt.Split(' ');
-                        graphTimeIntervals[timeIntervalsIndex] = tokens[1];
+                        graphTimeIntervals[timeIntervalsIndex] = tokens[1].Substring(0, tokens[1].Length-3); //no need for seconds in format
                         timeIntervalsIndex++;
                     }
 
@@ -1182,7 +1206,7 @@ namespace WeatherForecastApp
                     if(!lastDay)
                     {
                         string[] tokens = root.list[++i].dt_txt.Split(' ');
-                        graphTimeIntervals[timeIntervalsIndex] = tokens[1];
+                        graphTimeIntervals[timeIntervalsIndex] = tokens[1].Substring(0, tokens[1].Length - 3); //no need for seconds in format
                     }
 
                     break;

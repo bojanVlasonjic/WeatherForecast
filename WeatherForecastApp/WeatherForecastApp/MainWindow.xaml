@@ -377,7 +377,7 @@
                     </Canvas>
 
                     <Rectangle Fill="White" Grid.Column="1" Grid.Row="1" Width="250" Height="2" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                    <TextBlock Text="Currently showing data for day: Monday" Grid.Column="1" Grid.Row="1" Foreground="White" FontSize="14" VerticalAlignment="Center"/>
+                    <TextBlock x:Name="dayDisplayedTextBlock" Text="Currently showing data for day: Monday" Grid.Column="1" Grid.Row="1" Foreground="White" FontSize="14" VerticalAlignment="Center"/>
 
                 </Grid>
 
