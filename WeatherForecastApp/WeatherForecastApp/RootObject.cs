@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace WeatherForecastApp
 {
+
     public class RootObject
     {
         public string cod { get; set; }

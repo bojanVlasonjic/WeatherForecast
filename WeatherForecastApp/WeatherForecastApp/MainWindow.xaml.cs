@@ -38,12 +38,14 @@ namespace WeatherForecastApp
         const string cloudySunnyIconPath = "data/icons/cloudySunnyIcon.png";
         const string thunderstormIconPath = "data/icons/thunderstormIcon.png";
 
-
+        const string root_object_path = "data/files/last_root_object.bin";
 
         static HttpClient client = new HttpClient(); //used for multiple requests to server
         static RestRequest rest_request = new RestRequest(); //object used for sending request to server
         static OpenWeatherCities openWeatherCities;
         static RootObject root;
+
+        static SerializableRootObject serial_root_object = new SerializableRootObject();
 
         static bool isFavoritesShown = false;
 
@@ -59,7 +61,22 @@ namespace WeatherForecastApp
             //adding an on close event - disposing of the client
             this.Closed += new EventHandler(MainWindow_Closed);
 
-            //TODO: inicijalni update za trenutnu lokaciju
+            //Initial update of the weather
+            /*
+            RestResponse resp = rest_request.sendRequestToOpenWeather(client, rest_request.URL_Forecast);
+            if (resp.Root == null)
+            {
+                var serial_root = BinaryIO.ReadFromBinaryFile(root_object_path);
+                if(serial_root != null)
+                {
+                    root = serial_root_object.Root_Object;
+                    ChangeDisplayData();
+                }
+                
+            } else
+            {
+                //TODO: update the weather based on current location - IP LOCATOR
+            }  */
 
         }
 
@@ -772,6 +789,9 @@ namespace WeatherForecastApp
         {
             updateBasicTemperatureData(root);   //Update data here, when fade out is finished
             updateDailyTemperatureData();
+
+            //serial_root_object.Root_Object = root;
+            //BinaryIO.WriteToBinaryFile(root_object_path, serial_root_object);
 
             DoubleAnimation da = new DoubleAnimation
             {

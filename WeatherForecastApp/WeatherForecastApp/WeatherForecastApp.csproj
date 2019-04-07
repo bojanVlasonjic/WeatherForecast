@@ -63,6 +63,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="BinaryIO.cs" />
     <Compile Include="City.cs" />
     <Compile Include="Clouds.cs" />
     <Compile Include="Coord.cs" />
@@ -73,6 +74,7 @@
     <Compile Include="RestRequest.cs" />
     <Compile Include="RestResponse.cs" />
     <Compile Include="RootObject.cs" />
+    <Compile Include="SerializableRootObject.cs" />
     <Compile Include="Sys.cs" />
     <Compile Include="Weather.cs" />
     <Compile Include="Wind.cs" />
@@ -190,6 +192,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\deleteCross.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="data\files\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
