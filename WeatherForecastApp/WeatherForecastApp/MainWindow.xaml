@@ -258,7 +258,7 @@
                         <ColumnDefinition></ColumnDefinition>
                     </Grid.ColumnDefinitions>
 
-                    <Grid Grid.Column="1" UIElement.MouseEnter="WeatherDayMouseEnter" UIElement.MouseLeave="WeatherDayMouseLeave">
+                    <Grid Grid.Column="1" UIElement.MouseDown="Day1_MouseDown" UIElement.MouseEnter="WeatherDayMouseEnter" UIElement.MouseLeave="WeatherDayMouseLeave">
                         <Grid.RowDefinitions>
                             <RowDefinition></RowDefinition>
                             <RowDefinition></RowDefinition>
@@ -273,7 +273,7 @@
 
                     </Grid>
 
-                    <Grid Grid.Column="2" UIElement.MouseEnter="WeatherDayMouseEnter" UIElement.MouseLeave="WeatherDayMouseLeave">
+                    <Grid Grid.Column="2" UIElement.MouseDown="Day2_MouseDown" UIElement.MouseEnter="WeatherDayMouseEnter" UIElement.MouseLeave="WeatherDayMouseLeave">
                         <Grid.RowDefinitions>
                             <RowDefinition></RowDefinition>
                             <RowDefinition></RowDefinition>
@@ -288,7 +288,7 @@
 
                     </Grid>
 
-                    <Grid Grid.Column="3" UIElement.MouseEnter="WeatherDayMouseEnter" UIElement.MouseLeave="WeatherDayMouseLeave">
+                    <Grid Grid.Column="3" UIElement.MouseDown="Day3_MouseDown" UIElement.MouseEnter="WeatherDayMouseEnter" UIElement.MouseLeave="WeatherDayMouseLeave">
                         <Grid.RowDefinitions>
                             <RowDefinition></RowDefinition>
                             <RowDefinition></RowDefinition>
@@ -303,7 +303,7 @@
 
                     </Grid>
 
-                    <Grid Grid.Column="4" UIElement.MouseEnter="WeatherDayMouseEnter" UIElement.MouseLeave="WeatherDayMouseLeave">
+                    <Grid Grid.Column="4" UIElement.MouseDown="Day4_MouseDown" UIElement.MouseEnter="WeatherDayMouseEnter" UIElement.MouseLeave="WeatherDayMouseLeave">
                         <Grid.RowDefinitions>
                             <RowDefinition></RowDefinition>
                             <RowDefinition></RowDefinition>
@@ -318,7 +318,7 @@
 
                     </Grid>
 
-                    <Grid Grid.Column="5" UIElement.MouseEnter="WeatherDayMouseEnter" UIElement.MouseLeave="WeatherDayMouseLeave">
+                    <Grid Grid.Column="5" UIElement.MouseDown="Day5_MouseDown" UIElement.MouseEnter="WeatherDayMouseEnter" UIElement.MouseLeave="WeatherDayMouseLeave">
                         <Grid.RowDefinitions>
                             <RowDefinition></RowDefinition>
                             <RowDefinition></RowDefinition>

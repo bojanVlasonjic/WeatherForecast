@@ -46,6 +46,9 @@ namespace WeatherForecastApp
         static RootObject root;
         static FavoriteCities favoriteCities;
 
+        static int[] graphTemperatures = new int[8];
+        static string[] graphTimeIntervals = new string[5];
+
         static DispatcherTimer userNotificationTimer = new DispatcherTimer
         {
             Interval = TimeSpan.FromSeconds(4)
@@ -370,7 +373,7 @@ namespace WeatherForecastApp
         {
             //WARNING! Loading huge data (cities) -> no worries, I made a thread for it :P
             favoriteCities = new FavoriteCities();
-            ReloadWeatherByHours(new int[] { 5, 7, 10, 15, 16, 20, 18, 14, 11, 8}, new string[5] { "00:00", "06:00", "12:00", "18:00", "24:00" });
+            ReloadWeatherByHours(graphTemperatures, graphTimeIntervals);
 
 
             AddAllCitiesToFavoriteHolder();
@@ -389,7 +392,7 @@ namespace WeatherForecastApp
 
         private void WindowSizeChanged(object sender, EventArgs e)
         {
-            ReloadWeatherByHours(new int[] { 5, 7, 10, 15, 16, 20, 18, 14, 11, 8, 2, 20, 18, 14, 11, 8, 2 }, new string[5] { "00:00", "06:00", "12:00", "18:00", "24:00" });
+            ReloadWeatherByHours(graphTemperatures, graphTimeIntervals);
         }
 
 
@@ -497,7 +500,7 @@ namespace WeatherForecastApp
 
             if (response.Root == null)
             {
-                NotifyUser("Can't find place with that name"); //something wen't wrong in the response
+                NotifyUser(response.Message); //something wen't wrong in the response
                 return null;
             }
 
@@ -598,31 +601,87 @@ namespace WeatherForecastApp
 
             int endIndex = root.list.Count;
 
+            //dictionaries for measuring most common occurences of weather
+            Dictionary<string, int> weatherTypes = new Dictionary<string, int>();
+            Dictionary<string, int> smallDescriptions = new Dictionary<string, int>();
+
+            int temperatureIndex = 0;
+            int timeIntervalsIndex = 0;
+
+            bool graph_update_flag = true;
+
             //update the temperature for the following 5 days, measuring min and max temp over 24 hours from now
             // 3 hours * 8 intervals = 24 hours; 8 intervals * 5 days = 40
             for (int i = 0; i < endIndex; i++)
             {
+
+                if (i % 2 == 0 && graph_update_flag)
+                {
+                    string[] tokens = root.list[i].dt_txt.Split(' ');
+                    graphTimeIntervals[timeIntervalsIndex] = tokens[1];
+                    timeIntervalsIndex++;
+                }
+
+                if (temperatureIndex > 7 || timeIntervalsIndex > 4)
+                {
+                    graph_update_flag = false;
+                }
+
                 //24 hours passed, reseting temperatures
                 if(i%8 == 0 && i != 0)
                 {
+                    //find the most common weather description and occurence over the previous 24 hours
+                    weatherType = weatherTypes.Aggregate((x, y) => x.Value > y.Value ? x : y).Key;
+                    smallDescr = smallDescriptions.Aggregate((x, y) => x.Value > y.Value ? x : y).Key;
+
                     updateDailyValues(counter, minTemp, maxTemp, followingDay, weatherType, smallDescr);
 
+                    //reset temperature data
                     minTemp = 100000;
                     maxTemp = -100000;
 
+                    //reset dictionaries for counting weather occurences
+                    weatherTypes.Clear();
+                    smallDescriptions.Clear();
+
+                    //24 hours passed, move on to the next day
                     counter++;
                     followingDay = today.AddDays(counter);
                 }
 
+                /*
                 //collect weather description after 12 hours 
                 if(i%4 == 0)
                 {
                     weatherType = root.list[i].weather[0].main;
                     smallDescr = root.list[i].weather[0].description;
+                } */
+
+                //update small descriptions occurences
+                if(smallDescriptions.ContainsKey(root.list[i].weather[0].description))
+                {
+                    smallDescriptions[root.list[i].weather[0].description] += 1;
+                } else
+                {
+                    smallDescriptions[root.list[i].weather[0].description] = 1;
+                }
+
+                //update weather type occurences
+                if(weatherTypes.ContainsKey(root.list[i].weather[0].main)) {
+                    weatherTypes[root.list[i].weather[0].main] += 1;
+                } else
+                {
+                    weatherTypes[root.list[i].weather[0].main] = 1;
                 }
 
                 double currTemp = convertKelvinToCelsius(root.list[i].main.temp);
 
+                
+                if(graph_update_flag)
+                {
+                    graphTemperatures[temperatureIndex] = (int)currTemp;
+                }
+               
                 //update max temp
                 if (currTemp > maxTemp)
                 {
@@ -637,8 +696,14 @@ namespace WeatherForecastApp
 
                 //update one last time at the end
                 if(i == endIndex - 1) {
+                    //find the most common weather description and occurence over the previous 24 hours
+                    weatherType = weatherTypes.Aggregate((x, y) => x.Value > y.Value ? x : y).Key;
+                    smallDescr = smallDescriptions.Aggregate((x, y) => x.Value > y.Value ? x : y).Key;
+
                     updateDailyValues(counter, minTemp, maxTemp, followingDay, weatherType, smallDescr);
                 }
+
+                temperatureIndex++;
             }
         }
 
@@ -833,8 +898,7 @@ namespace WeatherForecastApp
         //Changing DATA animation
         private void StartDataChangeAnimation()
         {
-            
-            
+
             DoubleAnimation da = new DoubleAnimation
             {
                 From = 1,
@@ -857,6 +921,9 @@ namespace WeatherForecastApp
             {
                 updateBasicTemperatureData(root);   //Update data here, when fade out is finished
                 updateDailyTemperatureData();
+
+                //updating graph
+                ReloadWeatherByHours(graphTemperatures, graphTimeIntervals);
 
                 currentCity = root.city.name;
                 RootObjectIO.WriteToFile(root);
@@ -1016,6 +1083,98 @@ namespace WeatherForecastApp
 
             (sender as DispatcherTimer).Stop();
         }
+
+
+        /* Event handlers for clicking on daily temperatures */
+
+        private void Day1_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            updateGraphForSelectedDay(day1TextBlock.Text, false);
+            ReloadWeatherByHours(graphTemperatures, graphTimeIntervals);
+        }
+
+        private void Day2_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            updateGraphForSelectedDay(day2TextBlock.Text, false);
+            ReloadWeatherByHours(graphTemperatures, graphTimeIntervals);
+        }
+
+        private void Day3_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            updateGraphForSelectedDay(day3TextBlock.Text, false);
+            ReloadWeatherByHours(graphTemperatures, graphTimeIntervals);
+        }
+
+        private void Day4_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            updateGraphForSelectedDay(day4TextBlock.Text, false);
+            ReloadWeatherByHours(graphTemperatures, graphTimeIntervals);
+        }
+
+        private void Day5_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            updateGraphForSelectedDay(day5TextBlock.Text, true);
+            ReloadWeatherByHours(graphTemperatures, graphTimeIntervals);
+        }
+
+        
+        private void updateGraphForSelectedDay(string selectedDay, bool lastDay)
+        {
+
+            int counter = 0;
+
+            int temperatureIndex = 0;
+            int timeIntervalsIndex = 0;
+
+            string[] timeTokens = root.list[0].dt_txt.Split(' ');
+            string startTime = timeTokens[1];
+
+            bool time_reached = false;
+
+            for (int i = 0; i < root.list.Count; i++)
+            {
+                DateTime dayInIteration = DateTime.Parse(root.list[i].dt_txt);
+
+                if(dayInIteration.DayOfWeek.ToString().Equals(selectedDay) && root.list[i].dt_txt.Contains(startTime))
+                {
+                    time_reached = true;
+                }
+
+                //midnight for the selected day reached
+                if (time_reached)
+                { 
+                    
+                    if(counter%2 == 0)
+                    {
+                        string[] tokens = root.list[i].dt_txt.Split(' ');
+                        graphTimeIntervals[timeIntervalsIndex] = tokens[1];
+                        timeIntervalsIndex++;
+                    }
+
+                    double currTemp = convertKelvinToCelsius(root.list[i].main.temp);
+                    graphTemperatures[temperatureIndex] = (int)currTemp;
+
+                    temperatureIndex++;
+                    counter++;
+
+                }
+
+                if(counter > 7)
+                {
+                   
+                    //last day encounters index out of bounds exception, since it displays temps for 21 hours, not 24
+                    if(!lastDay)
+                    {
+                        string[] tokens = root.list[++i].dt_txt.Split(' ');
+                        graphTimeIntervals[timeIntervalsIndex] = tokens[1];
+                    }
+                    
+                    break;
+                }
+            }
+
+        }
+
 
     }
 }
