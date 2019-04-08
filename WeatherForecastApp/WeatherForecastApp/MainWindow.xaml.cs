@@ -100,7 +100,7 @@ namespace WeatherForecastApp
                 if (rootRequest != null)
                 {
                     root = rootRequest;
-                    currentCity = root.city.name;
+                    currentCity = $"{root.city.name},{root.city.country}";
                     ChangeDisplayData();
                 }
 
@@ -121,7 +121,7 @@ namespace WeatherForecastApp
                 {
                     updateBasicTemperatureData(root);   //Update data here, when fade out is finished
                     updateDailyTemperatureData();
-                    currentCity = root.city.name;
+                    currentCity = $"{root.city.name},{root.city.country}";
                     dayDisplayedTextBlock.Text = $"Currenly showing data for {DateTime.Now.DayOfWeek}";
                 }
 
@@ -993,7 +993,7 @@ namespace WeatherForecastApp
                 //updating text block identifying the graph
                 dayDisplayedTextBlock.Text = $"Currenly showing data for {DateTime.Now.DayOfWeek}";
 
-                currentCity = root.city.name;
+                currentCity = $"{root.city.name},{root.city.country}";
                 RootObjectIO.WriteToFile(root);
             }
 
