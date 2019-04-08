@@ -1039,6 +1039,7 @@ namespace WeatherForecastApp
 
             if(root_from_server != null)
             {
+                root = root_from_server;
                 ChangeDisplayData();
             }
             
