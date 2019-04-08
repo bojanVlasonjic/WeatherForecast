@@ -41,6 +41,7 @@ namespace WeatherForecastApp
         const string thunderstormIconPath = "ThunderStormIcon";
 
         static HttpClient client = new HttpClient(); //used for multiple requests to server
+        static HttpClient locationClient = new HttpClient();
         static RestRequest rest_request = new RestRequest(); //object used for sending request to server
         static OpenWeatherCities openWeatherCities;
         static RootObject root;
@@ -72,6 +73,8 @@ namespace WeatherForecastApp
             //Initial update of the weather
             loadLastSavedData();
 
+            //LocationData d = sendRequestLocation();
+
             //adding focus to search text box
             this.searchTextBox.GotFocus += searchTextBox_OnFocus;
             this.searchTextBox.LostFocus += searchTextBox_OnDefocus;
@@ -84,6 +87,24 @@ namespace WeatherForecastApp
         private void load_cities()
         {
             openWeatherCities = new OpenWeatherCities();
+        }
+
+        private void loadDataForCurrentLocation()
+        {
+            LocationData locationData = sendRequestLocation();
+
+            if (locationData != null)
+            {
+                RootObject rootRequest = sendRequestForecast(locationData.city);
+                
+                if (rootRequest != null)
+                {
+                    root = rootRequest;
+                    currentCity = root.city.name;
+                    ChangeDisplayData();
+                }
+
+            }
         }
 
 
@@ -104,11 +125,14 @@ namespace WeatherForecastApp
                     dayDisplayedTextBlock.Text = $"Currenly showing data for {DateTime.Now.DayOfWeek}";
                 }
 
+                else
+                {
+                    //TODO: update the weather based on current location - IP LOCATOR
+                    loadDataForCurrentLocation();
+                }
+
             }
-            else
-            {
-                //TODO: update the weather based on current location - IP LOCATOR
-            }
+           
         }
 
         private void UpdateSearchTextBox(string searchValue)
@@ -381,7 +405,7 @@ namespace WeatherForecastApp
             ReloadWeatherByHours(graphTemperatures, graphTimeIntervals);
 
 
-            AddAllCitiesToFavoriteHolder();
+            AddAllCitiesToFavoriteHolder();     //on startup put all user favorites to favorite holder
         }
 
 
@@ -406,6 +430,7 @@ namespace WeatherForecastApp
         {
             //Dispose once all HttpClient calls are complete
             client.Dispose();
+            locationClient.Dispose();
         }
 
 
@@ -501,6 +526,27 @@ namespace WeatherForecastApp
 
         }
 
+        //Retreiving location data
+        private LocationData sendRequestLocation()
+        {
+
+            LocationRestResponse response = rest_request.sendRequestToIPStack(client, rest_request.LOCATION_URL); //get response from server
+
+            if (response.Root == null)
+            {
+                NotifyUser(response.Message); //something wen't wrong in the response
+                return null;
+            }
+
+            //if the json parsed, but some of the importan't data is null
+            if (response.Root.city == null)
+            {
+                NotifyUser("Something went wrong. Please try again in a couple of minutes");
+                return null;
+            }
+
+            return response.Root;
+        }
 
         /* Method used for sending a forecast request to server.
          * Returns the forecast for the next week for every 3 hours */
@@ -1116,41 +1162,67 @@ namespace WeatherForecastApp
         }
 
 
+        private void changeDayHourWeather(object sender, EventArgs e, TextBlock textBlock, bool flag)
+        {
+            updateGraphForSelectedDay(textBlock.Text, flag);
+            ReloadWeatherByHours(graphTemperatures, graphTimeIntervals);
+            dayDisplayedTextBlock.Text = $"Currenly showing data for {textBlock.Text}";
+        }
+
+        private void AnimateWeatherChangeByHour(TextBlock textBlock, bool flag)
+        {
+            DoubleAnimation da = new DoubleAnimation
+            {
+                From = 1,
+                To = 0,
+                Duration = new Duration(TimeSpan.FromSeconds(0.35)),
+                AutoReverse = false
+            };
+            da.Completed += (sender, e) => WeatherByHoursAnimationComplete(sender, e, textBlock, flag);
+
+            WeatherGraphHolder.BeginAnimation(OpacityProperty, da);
+            
+        }
+
+        private void WeatherByHoursAnimationComplete(object sender, EventArgs e, TextBlock textBlock, bool flag)
+        {
+            changeDayHourWeather(sender, e, textBlock, flag);
+
+            DoubleAnimation da = new DoubleAnimation
+            {
+                From = 0,
+                To = 1,
+                Duration = new Duration(TimeSpan.FromSeconds(0.35)),
+                AutoReverse = false
+            };
+            WeatherGraphHolder.BeginAnimation(OpacityProperty, da);
+        }
+
         /* Event handlers for clicking on daily temperatures */
 
         private void Day1_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            updateGraphForSelectedDay(day1TextBlock.Text, false);
-            ReloadWeatherByHours(graphTemperatures, graphTimeIntervals);
-            dayDisplayedTextBlock.Text = $"Currenly showing data for {day1TextBlock.Text}";
+            AnimateWeatherChangeByHour(day1TextBlock, false);
         }
 
         private void Day2_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            updateGraphForSelectedDay(day2TextBlock.Text, false);
-            ReloadWeatherByHours(graphTemperatures, graphTimeIntervals);
-            dayDisplayedTextBlock.Text = $"Currenly showing data for {day2TextBlock.Text}";
+            AnimateWeatherChangeByHour(day2TextBlock, false);
         }
 
         private void Day3_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            updateGraphForSelectedDay(day3TextBlock.Text, false);
-            ReloadWeatherByHours(graphTemperatures, graphTimeIntervals);
-            dayDisplayedTextBlock.Text = $"Currenly showing data for {day3TextBlock.Text}";
+            AnimateWeatherChangeByHour(day3TextBlock, false);
         }
 
         private void Day4_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            updateGraphForSelectedDay(day4TextBlock.Text, false);
-            ReloadWeatherByHours(graphTemperatures, graphTimeIntervals);
-            dayDisplayedTextBlock.Text = $"Currenly showing data for {day4TextBlock.Text}";
+            AnimateWeatherChangeByHour(day4TextBlock, false);
         }
 
         private void Day5_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            updateGraphForSelectedDay(day5TextBlock.Text, true);
-            ReloadWeatherByHours(graphTemperatures, graphTimeIntervals);
-            dayDisplayedTextBlock.Text = $"Currenly showing data for {day5TextBlock.Text}";
+            AnimateWeatherChangeByHour(day5TextBlock, true);
         }
 
 
@@ -1216,6 +1288,9 @@ namespace WeatherForecastApp
 
         }
 
-
+        private void locationBtn_Click(object sender, RoutedEventArgs e)
+        {
+            loadDataForCurrentLocation();
+        }
     }
 }

@@ -63,6 +63,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Language.cs" />
+    <Compile Include="Location.cs" />
+    <Compile Include="LocationData.cs" />
+    <Compile Include="LocationRestResponse.cs" />
     <Compile Include="RootObjectIO.cs" />
     <Compile Include="City.cs" />
     <Compile Include="Clouds.cs" />
@@ -200,6 +204,9 @@
     <Resource Include="Images\sunny.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\locationIcon.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

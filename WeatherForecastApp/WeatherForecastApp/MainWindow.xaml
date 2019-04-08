@@ -19,6 +19,7 @@
         <Image x:Key="FavoritesImage" RenderOptions.BitmapScalingMode="HighQuality" Source="Images/favorites.png"/>
         <Image x:Key="DeleteFavorites" RenderOptions.BitmapScalingMode="HighQuality" Source="Images/deleteCross.png" />
         <Image x:Key="SearchIconImage" RenderOptions.BitmapScalingMode="HighQuality" Source="Images/searchIcon.png" />
+        <Image x:Key="LocationIconImage" RenderOptions.BitmapScalingMode="HighQuality" Source="Images/locationIcon.png" />
 
         <BitmapImage x:Key="SunnyBackground" RenderOptions.BitmapScalingMode="HighQuality" UriSource="Images/sunny.jpg" />
         <BitmapImage x:Key="CloudyBackground" RenderOptions.BitmapScalingMode="HighQuality" UriSource="Images/cloudy.jpg" />
@@ -175,6 +176,7 @@
                      VerticalAlignment="Stretch" FontSize="16" VerticalContentAlignment="Center" TextChanged="searchTextBox_TextChanged"></TextBox>
 
             <Button x:Name="refreshBtn" DockPanel.Dock="Right" ToolTip="Refresh"  Width="60" Height="40" Margin="0,0,5,5" BorderThickness="0" Content="{StaticResource ReloadImage}" Click="refreshBtn_Click" VerticalAlignment="Bottom"/>
+            <Button x:Name="locationBtn" DockPanel.Dock="Right" ToolTip="Current location"  Width="60" Height="40" Margin="0,0,5,5" BorderThickness="0" Content="{StaticResource LocationIconImage}" Click="locationBtn_Click" VerticalAlignment="Bottom"/>
             <Button x:Name="addToFavouritesBtn" DockPanel.Dock="Right" ToolTip="Add to favorites" Width="60" Height="40" Margin="0,0,5,0" BorderThickness="0" Content="{StaticResource PinImage}" Click="addToFavouritesBtn_Click"></Button>
             
             <TextBlock x:Name="UserNotificationMessage" Opacity="0" Style="{StaticResource WhiteText}" DockPanel.Dock="Right" VerticalAlignment="Center" Margin="0,0,10,0" Text="Notification message" FontSize="14"></TextBlock>
@@ -348,7 +350,7 @@
 
                 </Grid>
 
-                <Grid Height="400" Margin="0,20,0,0">
+                <Grid x:Name="WeatherGraphHolder" Opacity="1" Height="400" Margin="0,20,0,0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition MaxWidth="370"></ColumnDefinition>
                         <ColumnDefinition MinWidth="850"></ColumnDefinition>
