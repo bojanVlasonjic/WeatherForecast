@@ -691,8 +691,8 @@ namespace WeatherForecastApp
                 if(i%8 == 0 && i != 0)
                 {
                     //find the most common weather description and occurence over the previous 24 hours
-                   // weatherType = weatherTypes.Aggregate((x, y) => x.Value > y.Value ? x : y).Key;
-                   // smallDescr = smallDescriptions.Aggregate((x, y) => x.Value > y.Value ? x : y).Key;
+                   weatherType = weatherTypes.Aggregate((x, y) => x.Value > y.Value ? x : y).Key;
+                   smallDescr = smallDescriptions.Aggregate((x, y) => x.Value > y.Value ? x : y).Key;
 
                     updateDailyValues(counter, minTemp, maxTemp, followingDay, weatherType, smallDescr);
 
@@ -701,22 +701,22 @@ namespace WeatherForecastApp
                     maxTemp = -100000;
 
                     //reset dictionaries for counting weather occurences
-                    //weatherTypes.Clear();
-                    //smallDescriptions.Clear();
+                    weatherTypes.Clear();
+                    smallDescriptions.Clear();
 
                     //24 hours passed, move on to the next day
                     counter++;
                     followingDay = today.AddDays(counter);
                 }
 
-                
+                /*
                 //collect weather description after 12 hours
                 if(i%4 == 0)
                 {
                     weatherType = root.list[i].weather[0].main;
                     smallDescr = root.list[i].weather[0].description;
-                } 
-                /*
+                } */
+                
                 //update small descriptions occurences
                 if(smallDescriptions.ContainsKey(root.list[i].weather[0].description))
                 {
@@ -732,7 +732,7 @@ namespace WeatherForecastApp
                 } else
                 {
                     weatherTypes[root.list[i].weather[0].main] = 1;
-                } */
+                } 
 
                 double currTemp = convertKelvinToCelsius(root.list[i].main.temp);
 
@@ -757,8 +757,9 @@ namespace WeatherForecastApp
                 //update one last time at the end
                 if(i == endIndex - 1) {
                     //find the most common weather description and occurence over the previous 24 hours
-                    //weatherType = weatherTypes.Aggregate((x, y) => x.Value > y.Value ? x : y).Key;
-                    //smallDescr = smallDescriptions.Aggregate((x, y) => x.Value > y.Value ? x : y).Key;
+                    weatherType = weatherTypes.Aggregate((x, y) => x.Value > y.Value ? x : y).Key;
+                    smallDescr = smallDescriptions.Aggregate((x, y) =>
+                        (x.Value > y.Value && x.Key.ToLower().Contains(weatherType.ToLower())) ? x : y).Key;
 
                     updateDailyValues(counter, minTemp, maxTemp, followingDay, weatherType, smallDescr);
                 }
@@ -1162,14 +1163,14 @@ namespace WeatherForecastApp
         }
 
 
-        private void changeDayHourWeather(object sender, EventArgs e, TextBlock textBlock, bool flag)
+        private void changeDayHourWeather(object sender, EventArgs e, TextBlock textBlock, bool flag, bool firstDay)
         {
-            updateGraphForSelectedDay(textBlock.Text, flag);
+            updateGraphForSelectedDay(textBlock.Text, flag, firstDay);
             ReloadWeatherByHours(graphTemperatures, graphTimeIntervals);
             dayDisplayedTextBlock.Text = $"Currenly showing data for {textBlock.Text}";
         }
 
-        private void AnimateWeatherChangeByHour(TextBlock textBlock, bool flag)
+        private void AnimateWeatherChangeByHour(TextBlock textBlock, bool flag, bool firstDay)
         {
             DoubleAnimation da = new DoubleAnimation
             {
@@ -1178,15 +1179,15 @@ namespace WeatherForecastApp
                 Duration = new Duration(TimeSpan.FromSeconds(0.35)),
                 AutoReverse = false
             };
-            da.Completed += (sender, e) => WeatherByHoursAnimationComplete(sender, e, textBlock, flag);
+            da.Completed += (sender, e) => WeatherByHoursAnimationComplete(sender, e, textBlock, flag, firstDay);
 
             WeatherGraphHolder.BeginAnimation(OpacityProperty, da);
             
         }
 
-        private void WeatherByHoursAnimationComplete(object sender, EventArgs e, TextBlock textBlock, bool flag)
+        private void WeatherByHoursAnimationComplete(object sender, EventArgs e, TextBlock textBlock, bool flag, bool firstDay)
         {
-            changeDayHourWeather(sender, e, textBlock, flag);
+            changeDayHourWeather(sender, e, textBlock, flag, firstDay);
 
             DoubleAnimation da = new DoubleAnimation
             {
@@ -1202,31 +1203,31 @@ namespace WeatherForecastApp
 
         private void Day1_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            AnimateWeatherChangeByHour(day1TextBlock, false);
+            AnimateWeatherChangeByHour(day1TextBlock, false, true);
         }
 
         private void Day2_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            AnimateWeatherChangeByHour(day2TextBlock, false);
+            AnimateWeatherChangeByHour(day2TextBlock, false, false);
         }
 
         private void Day3_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            AnimateWeatherChangeByHour(day3TextBlock, false);
+            AnimateWeatherChangeByHour(day3TextBlock, false, false);
         }
 
         private void Day4_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            AnimateWeatherChangeByHour(day4TextBlock, false);
+            AnimateWeatherChangeByHour(day4TextBlock, false, false);
         }
 
         private void Day5_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            AnimateWeatherChangeByHour(day5TextBlock, true);
+            AnimateWeatherChangeByHour(day5TextBlock, true, false);
         }
 
 
-        private void updateGraphForSelectedDay(string selectedDay, bool lastDay)
+        private void updateGraphForSelectedDay(string selectedDay, bool lastDay, bool firstDay)
         {
 
             if(root == null)
@@ -1247,6 +1248,14 @@ namespace WeatherForecastApp
             for (int i = 0; i < root.list.Count; i++)
             {
                 DateTime dayInIteration = DateTime.Parse(root.list[i].dt_txt);
+
+                //resolving midnight issues
+                //if it's 11:45pm, I have to reset to previous day
+                //by checking the total seconds > 5400 I'm making shure it is not past midnight(at least an hour and a half)
+                if(startTime.Contains("00:00:00") && DateTime.Now.TimeOfDay.TotalSeconds > 5400)
+                {
+                    dayInIteration = dayInIteration.AddDays(-1);
+                }
 
                 if(dayInIteration.DayOfWeek.ToString().Equals(selectedDay) && root.list[i].dt_txt.Contains(startTime))
                 {
