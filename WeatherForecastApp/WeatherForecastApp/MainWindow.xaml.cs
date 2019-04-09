@@ -1187,11 +1187,16 @@ namespace WeatherForecastApp
                 Duration = new Duration(TimeSpan.FromSeconds(0.55)),
                 AutoReverse = false
             };
+            da.Completed += RemoveTextInNotification;
             UserNotificationMessage.BeginAnimation(OpacityProperty, da);
 
             (sender as DispatcherTimer).Stop();
         }
 
+        private void RemoveTextInNotification(object sender, EventArgs e)
+        {
+            UserNotificationMessage.Text = "";
+        }
 
         private void changeDayHourWeather(object sender, EventArgs e, TextBlock textBlock, bool flag, bool firstDay)
         {
@@ -1330,6 +1335,24 @@ namespace WeatherForecastApp
         private void locationBtn_Click(object sender, RoutedEventArgs e)
         {
             loadDataForCurrentLocation();
+        }
+
+        private void searchTextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Return)
+            {
+                if (!searchTextBox.Text.Equals("Search..."))
+                {
+                    RootObject root_from_server = sendRequestForecast(searchTextBox.Text);
+
+                    if (root_from_server != null)
+                    {
+                        root = root_from_server;
+                        ChangeDisplayData();
+                    }
+                    SearchSelectionWindow.Visibility = Visibility.Hidden;
+                }
+            }
         }
     }
 }
