@@ -391,7 +391,7 @@ namespace WeatherForecastApp
 
 
             Polyline polyline = new Polyline();
-            polyline.StrokeThickness = 3;
+            polyline.StrokeThickness = 2;
             polyline.Stroke = brush;
             polyline.Points = points;
 

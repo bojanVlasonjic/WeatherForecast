@@ -378,8 +378,10 @@
 
                     </Canvas>
 
-                    <Rectangle Fill="White" Grid.Column="1" Grid.Row="1" Width="250" Height="2" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                    <TextBlock x:Name="dayDisplayedTextBlock" Text="Currently showing data for day: Monday" Grid.Column="1" Grid.Row="1" Foreground="White" FontSize="14" VerticalAlignment="Center"/>
+                    <Rectangle Fill="White" Opacity="0.3" Grid.Column="1" Grid.Row="1" Height="2" HorizontalAlignment="Stretch" VerticalAlignment="Top"/>
+                    <TextBlock x:Name="dayDisplayedTextBlock" Text="Currently showing data for day: Monday"
+                               Grid.Column="1" Grid.Row="1" Foreground="White" FontSize="16"
+                               FontWeight="SemiBold" VerticalAlignment="Center" Margin="0,-8,0,0"/>
 
                 </Grid>
 
