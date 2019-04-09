@@ -692,8 +692,8 @@ namespace WeatherForecastApp
                 {
                     //find the most common weather description and occurence over the previous 24 hours
                     weatherType = weatherTypes.Aggregate((x, y) => x.Value > y.Value ? x : y).Key;
-                    smallDescr = smallDescriptions.Aggregate((x, y) =>
-                        (x.Value >= y.Value && x.Key.ToLower().Contains(weatherType.ToLower())) ? x : y).Key;
+                    smallDescriptions = removeUnmatchingSmallDescr(smallDescriptions, weatherType);
+                    smallDescr = smallDescriptions.Aggregate((x, y) => (x.Value >= y.Value) ? x : y).Key;
 
                     updateDailyValues(counter, minTemp, maxTemp, followingDay, weatherType, smallDescr);
 
@@ -759,14 +759,23 @@ namespace WeatherForecastApp
                 if(i == endIndex - 1) {
                     //find the most common weather description and occurence over the previous 24 hours
                     weatherType = weatherTypes.Aggregate((x, y) => x.Value > y.Value ? x : y).Key;
-                    smallDescr = smallDescriptions.Aggregate((x, y) =>
-                        (x.Value >= y.Value && x.Key.ToLower().Contains(weatherType.ToLower())) ? x : y).Key;
+                    smallDescriptions = removeUnmatchingSmallDescr(smallDescriptions, weatherType);
+                    smallDescr = smallDescriptions.Aggregate((x, y) => (x.Value >= y.Value) ? x : y).Key;
 
                     updateDailyValues(counter, minTemp, maxTemp, followingDay, weatherType, smallDescr);
                 }
 
                 temperatureIndex++;
             }
+        }
+
+        private Dictionary<string, int> removeUnmatchingSmallDescr(Dictionary<string, int> smallDescr, string match)
+        {
+            var new_Dict = smallDescr
+                           .Where(x => x.Key.ToLower().Contains(match.ToLower()))
+                           .ToDictionary(x => x.Key, x => x.Value);
+
+            return new_Dict;
         }
 
         private void updateDailyValues(int counter, double minTemp, double maxTemp, DateTime day, string weatherType, string descr)
