@@ -691,8 +691,9 @@ namespace WeatherForecastApp
                 if(i%8 == 0 && i != 0)
                 {
                     //find the most common weather description and occurence over the previous 24 hours
-                   weatherType = weatherTypes.Aggregate((x, y) => x.Value > y.Value ? x : y).Key;
-                   smallDescr = smallDescriptions.Aggregate((x, y) => x.Value > y.Value ? x : y).Key;
+                    weatherType = weatherTypes.Aggregate((x, y) => x.Value > y.Value ? x : y).Key;
+                    smallDescr = smallDescriptions.Aggregate((x, y) =>
+                        (x.Value >= y.Value && x.Key.ToLower().Contains(weatherType.ToLower())) ? x : y).Key;
 
                     updateDailyValues(counter, minTemp, maxTemp, followingDay, weatherType, smallDescr);
 
@@ -759,7 +760,7 @@ namespace WeatherForecastApp
                     //find the most common weather description and occurence over the previous 24 hours
                     weatherType = weatherTypes.Aggregate((x, y) => x.Value > y.Value ? x : y).Key;
                     smallDescr = smallDescriptions.Aggregate((x, y) =>
-                        (x.Value > y.Value && x.Key.ToLower().Contains(weatherType.ToLower())) ? x : y).Key;
+                        (x.Value >= y.Value && x.Key.ToLower().Contains(weatherType.ToLower())) ? x : y).Key;
 
                     updateDailyValues(counter, minTemp, maxTemp, followingDay, weatherType, smallDescr);
                 }
