@@ -139,14 +139,6 @@
     </Resource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="data\images\sunny.jpg" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="data\images\cloudy.jpg" />
-    <None Include="data\images\rainy.jpg" />
-    <None Include="data\images\snowy.jpg" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Images\favorites.png" />
   </ItemGroup>
   <ItemGroup>
@@ -156,20 +148,6 @@
     <Resource Include="Images\snowyIcon.png" />
     <Resource Include="Images\sunnyIcon.png" />
     <Resource Include="Images\thunderstormIcon.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="data\icons\cloudyIcon.png" />
-    <None Include="data\icons\cloudySunnyIcon.png" />
-    <None Include="data\icons\rainyIcon.png" />
-    <None Include="data\icons\snowyIcon.png" />
-    <None Include="data\icons\sunnyIcon.png" />
-    <None Include="data\icons\thunderstormIcon.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="data\images\foggy.jpg" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="data\icons\deleteCross.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\deleteCross.png" />

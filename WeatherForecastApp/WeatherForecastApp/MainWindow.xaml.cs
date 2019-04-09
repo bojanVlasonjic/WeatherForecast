@@ -55,12 +55,19 @@ namespace WeatherForecastApp
             Interval = TimeSpan.FromSeconds(4)
         };
 
+        //refresh weather data within 20 minutes
+        static DispatcherTimer refreshTimeInterval = new DispatcherTimer {
+            Interval = TimeSpan.FromMinutes(20)
+        };
+
+
+
         static SerializableRootObject serial_root_object = new SerializableRootObject();
 
         static bool isFavoritesShown = false;
 
         static string currentCity;
-
+        
 
         public MainWindow()
         {
@@ -75,6 +82,9 @@ namespace WeatherForecastApp
 
             //LocationData d = sendRequestLocation();
 
+            refreshTimeInterval.Tick += RefreshTimeInterval;
+            refreshTimeInterval.Start();
+
             //adding focus to search text box
             this.searchTextBox.GotFocus += searchTextBox_OnFocus;
             this.searchTextBox.LostFocus += searchTextBox_OnDefocus;
@@ -83,6 +93,12 @@ namespace WeatherForecastApp
             this.Closed += new EventHandler(MainWindow_Closed);
 
         }
+
+        private void RefreshTimeInterval(object sender, EventArgs e)
+        {
+            ChangeDisplayData();
+        }
+
 
         private void load_cities()
         {
@@ -949,6 +965,10 @@ namespace WeatherForecastApp
         {
 
             StartDataChangeAnimation();
+
+            refreshTimeInterval.Stop();
+            refreshTimeInterval.Tick += RefreshTimeInterval;
+            refreshTimeInterval.Start();
 
 
         }
